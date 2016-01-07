@@ -66,8 +66,11 @@ ggplot(newsub, aes(x=long, y=lat, colour=div)) + geom_point()
 ggplot(newsub, aes(x=date, y=lat, colour=div)) + geom_point()
 
 
+qplot(rh, data=dat0, geom="density") + facet_wrap(~fire, ncol=1) + scale_x_sqrt()
+qplot(rh, data=dat0, geom="density", colour=as.factor(fire)) + facet_wrap(~div, ncol=3) + scale_x_sqrt()
+qplot(rh, data=dat0, geom="density", colour=as.factor(fire)) + facet_grid(ffdi~div) 
 
-
+qplot(rh, data=dat0, colour=fire, geom="point") 
 
 
 
