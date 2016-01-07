@@ -5,7 +5,7 @@ library(proxy)
 
 
 #### sampling function #### 
-mysample <- function(n,trial=50)
+mysample <- function(z,n,trial=50)
 {
   require(proxy)
   trial <- min(trial,nrow(z)-n)
@@ -18,7 +18,13 @@ mysample <- function(n,trial=50)
     d <- dist(z[i,], z[sampledrows,])
     sampledrows[i[which.max(apply(d,1,min))]] <- TRUE
   }
-  return(which(sampledrows))
+  return(z[which(sampledrows),])
+}
+
+asfunc <- function(x, n){
+  x %>% 
+    select(day, long, lat) %>% 
+    do(mysample(.,n))
 }
 
 
@@ -34,18 +40,37 @@ train <- dat0 %>%
 test <- setdiff(dat0, train)
 
 #### create balanced samples for training set ####
+# use just one year while making function work
 
 
+# create small samples to work with
+
+x <- filter(train, fire==0 & year(date)==2001)
+x$day <- as.numeric(x$date)
+x <- ungroup(x)
+x <- select(x, div, day, long, lat)
+
+# list of sample sizes
+l <- c(11:21)
 
 
-prop.table(table(dat0$fire, dat0$subdiv),2)
-prop.table(table(samps$fire, samps$subdiv),2)
+x$day <- as.numeric(x$date)
 
-x <- filter(dat0, fire==1)
-sum(x$fire)      
+# creates samples all of the same size from each district
+samps <- x %>% group_by(div) %>% 
+  select(day, long, lat) %>% 
+  do(mysample(.,5))
 
-prop.table(table(dat0$div))
+#split into list of dataframes by div
+sp <- split(x, f=x$div)
 
-coord <- distinct(data.frame("lat"=dat0$lat, "long"=dat0$long, "div"=dat0$div, "subdiv" = dat0$subdiv))
-table(test$div)
-table(test$subdiv)
+# use function on list of dataframes and list of sample sizes
+fil <- mapply(asfunc, sp, l)
+# transpose
+fil <- t(fil)
+# turn each row into a data frame : list of dataframes
+ts <- apply(fil, 1, as.data.frame)
+# rbinds each dataframe in the list of data frames
+df <- do.call("rbind", ts)
+
+
