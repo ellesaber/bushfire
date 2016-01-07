@@ -27,13 +27,6 @@ mysample <- function(z,trial=50)
   return(z.new)
 }
 
-asfunc <- function(x, n){
-  x %>% 
-    select(day, long, lat) %>% 
-    do(mysample(.,n))
-}
-
-
 load("./robject/dat0.rda")
 set.seed(2311)
 
@@ -48,10 +41,13 @@ dat.sub.2001$date <- as.numeric(dat.sub.2001$date-min(dat.sub.2001$date))
 newsub <- dat.sub.2001 %>% group_by(div) %>% mysample
 newsub <- dat.sub.2001 %>% filter(div == "Central Highlands") %>% mysample
 
+newsub <- dat.sub.2001 %>% group_by(div) %>% do(mysample(.))
+
+
 #### create test and train #### 
 
-train <- dat0 %>% 
-  group_by(subdiv, fire) %>% 
+train <- dat.sub %>% 
+  group_by(div, fire) %>% 
   sample_frac(.8, replace=FALSE)
 
 test <- setdiff(dat0, train)
@@ -59,41 +55,20 @@ test <- setdiff(dat0, train)
 #### create balanced samples for training set ####
 # use just one year while making function work
 
+train$date <- as.numeric(train$date-min(train$date))
 
-# create small samples to work with
+newsub <- train %>% group_by(div) %>% do(mysample(.))
 
-x <- filter(train, fire==0 & year(date)==2001)
-x$day <- as.numeric(x$date)
-x <- ungroup(x)
-x <- select(x, div, day, long, lat)
+table(newsub$div, newsub$fire)
+summary(newsub)
+ggplot(newsub, aes(x=long, y=lat, colour=div)) + geom_point()
 
-# list of sample sizes
-l <- c(11:21)
-
-
-x$day <- as.numeric(x$date)
-
-# creates samples all of the same size from each district
-samps <- x %>% group_by(div) %>% 
-  select(day, long, lat) %>% 
-  do(mysample(.,5))
-
-#split into list of dataframes by div
-sp <- split(x, f=x$div)
-
-# use function on list of dataframes and list of sample sizes
-fil <- mapply(asfunc, sp, l)
-
-fil <- x %>% 
-    group_by(div) %>% 
-    do(asfunc)
+ggplot(newsub, aes(x=date, y=lat, colour=div)) + geom_point()
 
 
-# transpose
-fil <- t(fil)
-# turn each row into a data frame : list of dataframes
-ts <- apply(fil, 1, as.data.frame)
-# rbinds each dataframe in the list of data frames
-df <- do.call("rbind", ts)
+
+
+
+
 
 
