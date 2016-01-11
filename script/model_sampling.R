@@ -30,7 +30,16 @@ mysample <- function(z,trial=50)
 load("./robject/dat0.rda")
 set.seed(2311)
 
-dat.sub <- dat0 %>% select(date, lat, long, div, fire, curing, temp, ffdi, df, rh, ws, vapour, rain)
+#### Add in fire danger rating to dataset #### 
+
+# vec contains intervals for fire danger ratings
+vec <- c(0, 12, 25, 50, 75, 100)
+c <- data.table("fdr"=findInterval(dat0$ffdi, vec))
+
+dat0$fdr = factor(c$fdr, labels=c("lowmod", "high", "vhigh", "severe", "extreme", "codered"), ordered = TRUE)
+
+dat.sub <- dat0 %>% select(date, lat, long, div, fire, curing, temp, ffdi, fdr, df, rh, ws, vapour, rain)
+
 dat.sub.2001 <- dat.sub %>% filter(year(date) == "2001")
 table(dat.sub.2001$div)
 prop.table(table(dat.sub.2001$div, dat.sub.2001$fire),1)
