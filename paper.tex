@@ -3,18 +3,12 @@
 % Change Hons to PhD, MAE, MPhil or MComm as appropraite
 % Remove singlespace and singleside for final version.
 
-\usepackage{lipsum}
+%\usepackage{lipsum}
 \usepackage{float}
 \usepackage{gensymb}
+\usepackage{natbib}
 \usepackage{pdfpages}
 \usepackage{listings}
-
-
-
-\captionsetup[lstlisting]{labelformat=empty}
-
-\bibliography{thesisrefs}
-
 \title{Predicting Fire Risk: \\ An Evaluation of the Fire Danger Index}
 \author{Elle Saber, Rob J Hyndman \& Di Cook}
 
@@ -23,35 +17,8 @@
 
 \pagenumbering{roman}
 
-\lstset{language=R,
-	basicstyle=\scriptsize\ttfamily,
-	commentstyle=\ttfamily\color{gray},
-	numbers=left,
-	numberstyle=\ttfamily\color{gray}\footnotesize,
-	stepnumber=1,
-	numbersep=5pt,
-	backgroundcolor=\color{white},
-	showspaces=false,
-	showstringspaces=false,
-	showtabs=false,
-	frame=single,
-	tabsize=2,
-	breaklines=true,
-	breakatwhitespace=false,
-	title=\lstname,
-	escapeinside={},
-	keywordstyle={},
-	morekeywords={}}
-\captionsetup[lstlisting]{labelformat=empty}
 
-\titlepage
-
-\newpage
-\pagenumbering{arabic}
-\setcounter{page}{1}
-\newpage
-
-\prefacesection{Abstract}
+\section*{Abstract}
 
 This paper investigates the effectiveness of the Forest Fire Danger Index (FFDI) \citep{mcarthur67} at predicting probability of ignition of bushfire in Victoria using logistic regression, classification trees and random forests. I construct a 10km gridded dataset of Victoria consisting of daily values for FFDI, temperature, wind speed, relative humidity, the drought factor, grassland curing level, vapour pressure at 9am and precipitation between 2000 and 2010. I find that the FFDI alone is a poor predictor of ignition. By adding the input variables to the FFDI, grassland curing, vapour pressure at 9am and precipitation I improve model accuracy and conclude that, of the variables used, grassland curing is the most important in predicting ignition. Combining non-linear regression splines with logistic models produces predictive performance comparable with random forests. 
 
@@ -162,7 +129,7 @@ The WRF model \citep{evans10} is deemed to be an accurate representation of Aust
 %Graphs, need to redo better
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/Data/silvan.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/Data/silvan.pdf} 
 	\caption{Time series of meterological varibles for Silvan (-37.82, 145.42)} 
 	\label{fig:silv} 
 \end{figure}
@@ -180,7 +147,7 @@ Combination of these variables as per equation (\ref{eq FFDI}) yields the FFDI w
 %WS, Temp and FDR contours, see if can change colours to match with the diagram
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/Data/tw_fdr.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/Data/tw_fdr.pdf} 
 	\caption{Wind Speed and temperature coloured by fire danger rating} 
 	\label{fig:tw_fdr} 
 \end{figure}
@@ -198,13 +165,13 @@ The curing values are derived from surface reflectance estimates which in turn a
 
 Page 10 shows how the level of grassland curing (maximum, minimum and average) changes over each fire season in our sample separated by CFA district. We can see that the districts 2, 5, 8, 16, 17, 18, 20 \&  22 generally dry out faster and have higher minimum curing values relative to districts 4, 6, 9, 10 \& 13. The evolution of grassland curing across the districts clearly demonstrates differing conditions across different parts of the state. 
 
-\includepdf[pages={1}]{figures/Data/curdist.pdf}
+%\includepdf[pages={1}]{figures/Data/curdist.pdf}
 
 
 % level plot of GS curing, probably needs resizing
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/Data/cur_lp.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/Data/cur_lp.pdf} 
 	\caption{Level Plot of Grassland Curing } 
 	\label{fig:cur_lp} 
 \end{figure}
@@ -220,7 +187,7 @@ The vapour pressure dataset was also obtained from the Bureau of Meteorology TER
 % level plot of vapour pressure, level plot may be unnesc could just have std plot
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/Data/vap_ras.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/Data/vap_ras.pdf} 
 	\caption{Raster plot of vapour pressure 9am } 
 	\label{fig:vap_ras} 
 \end{figure}
@@ -262,7 +229,7 @@ Table \ref{table:correl} shows the cross correlaton matrix for the variables use
 %Map of fire ignitions in Victoria
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/data/firemap.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/data/firemap.pdf} 
 	\caption{Map of fire ignition 2000 - 2009} 
 	\label{fig:firemap} 
 \end{figure}
@@ -270,7 +237,7 @@ Table \ref{table:correl} shows the cross correlaton matrix for the variables use
 %timeseries histogram with count of ignitions per fortnight
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/data/occurence.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/data/occurence.pdf} 
 	\caption{Number of ignitions by fortnight} 
 	\label{fig:occ} 
 \end{figure}
@@ -288,7 +255,7 @@ Figure \ref{fig:firemap} shows the locations of the fires in the dataset on the 
 
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/Data/tw_fire.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/Data/tw_fire.pdf} 
 	\caption{Wind Speed and temperature coloured by fire/no fire} 
 	\label{fig:tw_fire} 
 \end{figure}
@@ -297,7 +264,7 @@ Figure \ref{fig:tw_fire} is constructed in the same manner as Figure \ref{fig:tw
 
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/Data/dh_fire.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/Data/dh_fire.pdf} 
 	\caption{Drought factor and relative humidity coloured by fire/no fire} 
 	\label{fig:dh_fire} 
 \end{figure}
@@ -306,7 +273,7 @@ Plotting the 2D densities of the drought factor and relative humidity in Figure 
 
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/Data/gv_fire.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/Data/gv_fire.pdf} 
 	\caption{Grassland curing and vapour pressure coloured by fire/no fire} 
 	\label{fig:gv_fire} 
 \end{figure}
@@ -448,25 +415,25 @@ An example confusion matrix is given in table \ref{table:ex}.
 Accuracy is defined as:
 \begin{equation}
 \label{eq acc}
-\text{Accuracy} = \frac{a + d}{a+b+c+d}
+\mbox{Accuracy} = \frac{a + d}{a+b+c+d}
 \end{equation}
 
 I also report sensitivity (correctly classified fires dividied by total number of actual fires) and specificity (correctly identified non-fires divided by total number of non-fires), balanced accuracy and kappa. 
 
 \begin{equation}
 \label{eq sens}
-\text{Sensitivity} = \frac{a }{a+b}
+\mbox{Sensitivity} = \frac{a }{a+b}
 \end{equation}
 
 \begin{equation}
 \label{eq spec}
-\text{Specificity} = \frac{d}{c+d}
+\mbox{Specificity} = \frac{d}{c+d}
 \end{equation}
 
 
 \begin{equation}
 \label{eq BA}
-\text{Balanced Accuracy} = \frac{\frac{a }{a+b} + \frac{d}{c+d} }{2}
+\mbox{Balanced Accuracy} = \frac{\frac{a }{a+b} + \frac{d}{c+d} }{2}
 \end{equation}
 
 
@@ -610,17 +577,17 @@ Grassland curing exhibits a right skewed function, having a positive effect on t
 %GAM plots, not sure if this is exactly splines... 
 \begin{figure}[h]
 \null\vfill\noindent
-\includegraphics[page=1,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
+%\includegraphics[page=1,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
 \hfill
-\includegraphics[page=2,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
+%\includegraphics[page=2,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
 \vfill
-\includegraphics[page=3,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
+%\includegraphics[page=3,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
 \hfill
-\includegraphics[page=4,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
+%\includegraphics[page=4,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
 \vfill
-\includegraphics[page=5,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
+%\includegraphics[page=5,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
 \hfill
-\includegraphics[page=6,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
+%\includegraphics[page=6,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
 \vfill
 \null
 	\caption{Plots of smoothing functions in Model 4 with 95\% pointwise confident interval} 
@@ -672,7 +639,7 @@ Table \ref{table:acc2} shows the gain in balanced accuracy from including both t
 %ROC for logits
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/all_roc.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/all_roc.pdf} 
 	\caption{ROC curve for logistic models} 
 	\label{fig:ffdi} 
 \end{figure}
@@ -690,8 +657,8 @@ As classification trees can be sensitive to the sample used, I constructed sever
 % Trees with all variables
 \begin{figure}[h]
 	\centering 
-	\includegraphics[page=1, width=1\columnwidth]{figures/trees2.pdf} 
-	\includegraphics[page=2, width=1\columnwidth]{figures/trees2.pdf} 
+%	\includegraphics[page=1, width=1\columnwidth]{figures/trees2.pdf} 
+%	\includegraphics[page=2, width=1\columnwidth]{figures/trees2.pdf} 
 	\caption{Trees with all variables} 
 	\label{fig:tree2} 
 \end{figure}
@@ -755,7 +722,7 @@ Based on the ROC plot though the tree is superior to logit model 3 but inferior 
 
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/trees_roc.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/trees_roc.pdf} 
 	\caption{ROC curve for Tree Models} 
 	\label{fig:troc} 
 \end{figure}
@@ -815,7 +782,7 @@ Table \ref{table:correl} is the cross-correlation matrix for the variables and w
 
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/varimp.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/varimp.pdf} 
 	\caption{Variable Importance for random forest} 
 	\label{fig:vimp} 
 \end{figure}
@@ -837,7 +804,7 @@ Finally figure \ref{fig:rocrf} shows the ROC curve for the random forest, a sing
 
 \begin{figure}[h]
 	\centering 
-	\includegraphics[width=1\columnwidth]{figures/roc_rf.pdf} 
+%	\includegraphics[width=1\columnwidth]{figures/roc_rf.pdf} 
 	\caption{Variable Importance for random forest} 
 	\label{fig:rocrf} 
 \end{figure}
@@ -888,50 +855,10 @@ Special thanks to Sarah Harris (Earth \& Atmosphereic Science, Monash), Hamish C
 
 To my long suffering honours cohort, I apologise for the tears and for boring you with my data struggles, you have been the the best team to be a part of. 
 
-\printbibliography
-
-\clearpage
-
 % Appendices start here
-\appendix
+\bibliographystyle{asa}
 
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/main.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/sort_state.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/new_sort_ncdf.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/convert_coords.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/suburb_list.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/sort_dummy.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/subset_data.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/add_district.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/download_curing.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/download_vapour.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/rainfall.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/add_curing.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/random_testtrain.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/minimax-sampling copy.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/plot_fire.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/plot_weather.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/logistic_output.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/tree.R"}
-
-\lstinputlisting[basicstyle=\tiny]{"/Users/ellesaber/Dropbox/E Saber Honours/Proposal Shared/Rproj/scriptsR/RF_plot.R"}
+\bibliography{references}
 
 
 \end{document}
