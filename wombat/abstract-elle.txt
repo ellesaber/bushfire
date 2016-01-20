@@ -1,0 +1,6 @@
+Dousing forest fires with random forests in R
+
+Elle Saber
+
+This talk describes an investigation into the effectiveness of the Forest Fire Danger Index (FFDI)  at predicting probability of ignition of bushfire in Victoria using logistic regression, classification trees and random forests. A 10km gridded dataset of Victoria consisting of daily values for FFDI, temperature, wind speed, relative humidity, the drought factor, grassland curing level, vapour pressure at 9am and precipitation between 2000 and 2010. FFDI is constructed from temperature, relative humidity, wind speed, and drought factor, which should be good indicators of potential fire trouble. Howeever, in this analysis it is clear that FFDI alone appears to be a poor predictor of ignition. By adding additonal information - curing, vapour pressure and precipitation - much better prediction of ignition is obtained. All of this analysis was conducted using R packages data.table, raster, ncdf, sp, proxy, rvest, randomForest, splines, gam, rpart, caret, ggmaps, dpyr, lubridate, ggplot2.
+
