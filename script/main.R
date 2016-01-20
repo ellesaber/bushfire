@@ -25,8 +25,6 @@ source("process_vapour")
 # end result: dat0 datatable 
 # contains all variables for fire seasons between 2000 and 2010
 
-#### Data Visualisation #### 
-
 
 
 #### Model Building ####
@@ -34,6 +32,11 @@ source("process_vapour")
 source("model_sampling")
 # create test and train for each district
 # create balanced samples from training set
+
+#### Data Visualisation #### 
+source("plot_densities")
+
+source("model_logit")
 
 
 #### Error Analysis ####

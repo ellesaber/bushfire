@@ -1,0 +1,30 @@
+---
+title: "Bushfires in R"
+author: "Elle Saber"
+date: "20 January 2016"
+output: beamer_presentation
+---
+
+## Modelling Probability of Ignition of Bushfires in Victoria 
+
+Data Processing involved with the honours project 
+
+## Slide with Bullets
+```{r mysize=TRUE, size='small'}
+library(ncdf)
+temp.nc <- open.ncdf("./TMAX1984-2009.nc")
+temp.nc
+
+```
+
+## Fire Map
+
+![Map of Fire Occurence](figures/Data/firemap.pdf)
+
+## NCDF Temp Data random Day
+
+![Max Temperature](figures/Data/tmax.pdf)
+
+## NCDF time series
+
+![Time series Silvan](figures/Data/silvan.pdf)
