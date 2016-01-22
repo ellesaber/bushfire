@@ -1,14 +1,14 @@
 % !TeX spellcheck = <none>
-\documentclass{article}
+\documentclass[11pt,a4paper]{article}
 % Change Hons to PhD, MAE, MPhil or MComm as appropraite
 % Remove singlespace and singleside for final version.
 
-%\usepackage{lipsum}
-\usepackage{float}
+\usepackage{float,fullpage}
 \usepackage{gensymb}
 \usepackage{natbib}
 \usepackage{pdfpages}
 \usepackage{listings}
+
 \title{Predicting Fire Risk: \\ An Evaluation of the Fire Danger Index}
 \author{Elle Saber, Rob J Hyndman \& Di Cook}
 
@@ -51,7 +51,7 @@ where
 	\item $D$: drought factor (Index)
 	\item $H$: relative humidity (percent)
 	\item $T$: temperature (degrees Celsius)
-	\item $V$: Average wind velocity ($km/hr$)
+	\item $V$: Average wind velocity (\emph{km/hr})
 \end{itemize}
 
 McArthur's FFDI relates weather conditions to expected fire behaviour and rate of spread. It is used in fire fighting operations by weather forecasters and fire agencies to determine fire danger \citep{clarke2013}. 
@@ -280,7 +280,7 @@ In Figure \ref{fig:gv_fire} shows the 2D densities for grassland curing and vapo
 
 \subsection{Assembling datasets}
 
-Assembling the datasets began with the meterological data from the WRF model. This data came in NetCDF form \citep{ncdf}. The dataset spanned all of Eastern Australian (Queensland, New South Wales \& Victoria) with daily observations over a 25 year period. This area, divided into 10km grids, contained 28675 gridpoints each of which had longitude, lattitude and weather variable values (temperature, wind speed, relative humidty, FFDI and drought factor) associated with it. Once the time component is taken into account, the original dataset contained over 200 million data points (28675 $\times$ 365 $\times$ 25 ). 
+Assembling the datasets began with the meterological data from the WRF model. This data came in NetCDF form \citep{ncdf}. The dataset spanned all of Eastern Australian (Queensland, New South Wales \& Victoria) with daily observations over a 25 year period. This area, divided into 10km grids, contained 28675 gridpoints each of which had longitude, lattitude and weather variable values (temperature, wind speed, relative humidty, FFDI and drought factor) associated with it. Once the time component is taken into account, the original dataset contained over 200 million data points ($28675 \times 365 \times 25$). 
 
 The first step was to reduce the dataset to a more manageable size. I converted the NCDF file to a datatable using the raster and data.table packages in R \citep{raster, datatable}. I used ESRI shapefiles of Australian Geographical Classification boundaries \citep{ABS1259} to sort the gridpoints into states and selected only gridpoints in Victoria. The datasets intersect between 2000 and 2009, subsetting the WFR data reduces the size of the dataset to just over 8 million data points. 
 
@@ -307,16 +307,16 @@ This final dataset is divided into a testing (30\%) and training set (70\%) rand
 
 Use of logistic models is the usual method for dealing with a binary response problem and it is common in studies on fire occurrence or ignition.  In this project I use logistic regression models and in addition to the linear constructions used in \citet{andrews03} and \citet{del11} I take into account the non-linear relationship believed to exist between the explanatory variables and dependent variable through the inclusion of regression splines. 
 
-Regression splines are a method for modelling nonlinear data as a number of piecewise  polynomial functions. The points at which the functions join are called knots. For example when the functions join at $x=k$, $k$is known as a knot \citep{ruppert03}.
+Regression splines are a method for modelling nonlinear data as a number of piecewise  polynomial functions. The points at which the functions join are called knots. For example when the functions join at $x=k$, $k$ is known as a knot \citep{ruppert03}.
 
 As a result the logistic model becomes
 \begin{equation}
 \label{eq logits}
 \Pr(Y=1|X)=\frac{\exp(\sum_{k=1}^K f_k(x_k))}{1+\exp(\sum_{k=1}^K f_k(x_k)}
 \end{equation}
-where $Y$ denomtes fire occurence, $x_k$ denotes the $k^{th}$ predictor and each $f_k$ represents a penalized regression spline.
+where $Y$ denomtes fire occurence, $x_k$ denotes the $k$th predictor and each $f_k$ represents a penalized regression spline.
 
-Regression splines can be subject to over fitting: where the fitted model adheres to the data too strongly and doesn't smooth out ~noise' enough. This results in great in-sample predictions but poor out-of-sample predictions. To prevent over fitting occurring we use an automated method that optimizes the number of knots by penalizing for non-smoothness; an overview of using penalized regression splines in this context is given by \citet{wood02}. 
+Regression splines can be subject to over fitting: where the fitted model adheres to the data too strongly and doesn't smooth out `noise' enough. This results in great in-sample predictions but poor out-of-sample predictions. To prevent over fitting occurring we use an automated method that optimizes the number of knots by penalizing for non-smoothness; an overview of using penalized regression splines in this context is given by \citet{wood02}. 
 
 \subsection{Classification trees}
 
@@ -854,7 +854,7 @@ Special thanks to Sarah Harris (Earth \& Atmosphereic Science, Monash), Hamish C
 To my long suffering honours cohort, I apologise for the tears and for boring you with my data struggles, you have been the the best team to be a part of. 
 
 % Appendices start here
-\bibliographystyle{asa}
+\bibliographystyle{agsm}
 
 \bibliography{references}
 
