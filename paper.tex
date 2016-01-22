@@ -3,11 +3,28 @@
 % Change Hons to PhD, MAE, MPhil or MComm as appropraite
 % Remove singlespace and singleside for final version.
 
-\usepackage{float,fullpage}
+\usepackage{fullpage,booktabs,amsmath}
 \usepackage{gensymb}
 \usepackage{natbib}
 \usepackage{pdfpages}
 \usepackage{listings}
+
+%% FLOATS and CAPTIONS
+\usepackage{float,caption}
+\DeclareCaptionStyle{italic}[justification=centering]
+ {labelfont={bf},textfont={it},labelsep=colon}
+\captionsetup[figure]{style=italic,format=hang,singlelinecheck=true}
+\captionsetup[table]{style=italic,format=hang,singlelinecheck=true}
+
+%% GRAPHICS
+\usepackage{graphicx}
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.15}
+\renewcommand{\floatpagefraction}{0.7}
 
 \title{Predicting Fire Risk: \\ An Evaluation of the Fire Danger Index}
 \author{Elle Saber, Rob J Hyndman \& Di Cook}
@@ -16,9 +33,9 @@
 \begin{document}
 \maketitle
 
-\section*{Abstract}
-
+\begin{abstract}
 This paper investigates the effectiveness of the Forest Fire Danger Index (FFDI) \citep{mcarthur67} at predicting probability of ignition of bushfire in Victoria using logistic regression, classification trees and random forests. I construct a 10km gridded dataset of Victoria consisting of daily values for FFDI, temperature, wind speed, relative humidity, the drought factor, grassland curing level, vapour pressure at 9am and precipitation between 2000 and 2010. I find that the FFDI alone is a poor predictor of ignition. By adding the input variables to the FFDI, grassland curing, vapour pressure at 9am and precipitation I improve model accuracy and conclude that, of the variables used, grassland curing is the most important in predicting ignition. Combining non-linear regression splines with logistic models produces predictive performance comparable with random forests. 
+\end{abstract}
 
 \section{Introduction}
 
@@ -30,7 +47,7 @@ This paper uses the Australian Forest Fire Danger index (FFDI) as a baseline mod
 
 I construct a dataset of bushfire ignition and metereological variables such that predicting fire ignition becomes a binary classification problem. Then I apply both some common machine learning techniques: classification trees and random forests and compare their performance to logistic regression models which use non-parametric smoothing functions. The dataset suffers from severe class imbalance, the number of fires compared to number of non fires is tiny. Accordingly, models are evaluated based on balance accuracy measures and reciever operating characteristic plots. 
 
- The greatest improvement in accuracy occurs in models which allow for the input variables to behave non-linearly. By adding spline functions to the logistic model I produce a predictor which is comparable to the random forest in accuracy. 
+The greatest improvement in accuracy occurs in models which allow for the input variables to behave non-linearly. By adding spline functions to the logistic model I produce a predictor which is comparable to the random forest in accuracy. 
 
 While the FFDI may be a good measure of fire intensity once ignition occurs, it is a poor predictor of fire ignition. Predictor performance is improved with the inclusion of the FFDI input variables, grassland curing, vapour pressure at 9am and precipitation. Specfically of these variables, grassland curing is the most important variable in determining probability of ignition. 
 
@@ -40,34 +57,34 @@ While the FFDI may be a good measure of fire intensity once ignition occurs, it 
 \subsection{Fire Danger Rating Systems and McArthur's Forest Fire Danger Index}
 Fire danger rating systems estimate the severity of burning conditions and likelihood of fire over a large area at a particular time \citep{chandler83, andrews03}. The Forest Fire Danger Index (FFDI) \citep{mcarthur67} is the fire danger rating system used in Australia. It integrates weather elements into an index and is used as a key tool in assessing fire danger in Australia. Fire danger rating indices are accepted worldwide for anticipating general fire activity in a given area but less so for evaluating ignition probabilities. 
 
-McArthur’s FFDI originated as tabulated indices and were subsequently reduced to equations by \citet{noble80} which in turn simplified into the formulation of the FFDI given by equation (\ref{eq FFDI}). 
-
+McArthur’s FFDI originated as tabulated indices and were subsequently reduced to equations by \citet{noble80} which in turn simplified into the formulation of the FFDI given by
 \begin{equation}
 \label{eq FFDI}
-F=2.0 e^{-0.450 + 0.987 \ln(D)-0.0345H+0.0338T+0.0234V}
+F=2.0 e^{-0.450 + 0.987 \ln(D)-0.0345H+0.0338T+0.0234V},
 \end{equation}
 where 
 \begin{itemize}
-	\item $D$: drought factor (Index)
-	\item $H$: relative humidity (percent)
-	\item $T$: temperature (degrees Celsius)
-	\item $V$: Average wind velocity (\emph{km/hr})
+	\item $D$ is the drought factor index;
+	\item $H$ is relative humidity (as a percentage);
+	\item $T$ is temperature (degrees Celsius); and
+	\item $V$ is average wind velocity (in km/hr).
 \end{itemize}
 
 McArthur's FFDI relates weather conditions to expected fire behaviour and rate of spread. It is used in fire fighting operations by weather forecasters and fire agencies to determine fire danger \citep{clarke2013}. 
 
 \begin{table}[ht]
 	\centering
-	\begin{tabular}{|c|c|}
-		\hline Fire Danger Rating & Forest Fire Danger Index \\ 
-		\hline
-		Low-Moderate  & 0-11 \\ 
-		High  &  12-24 \\ 
-		Very High  &  25-49\\ 
-		Severe &  50-74\\ 
-		Extreme  &  75-99 \\ 
-		Code Red  &  100+ \\ 
-		\hline 
+	\begin{tabular}{ll}
+		\toprule
+		Fire Danger Rating & Forest Fire Danger Index \\
+		\midrule
+		Low-Moderate              & 0--11 \\
+		High                      & 12--24 \\
+		Very High                 & 25--49\\
+		Severe                    & 50--74\\
+		Extreme                   & 75--99 \\
+		Code Red                  & 100+ \\
+		\bottomrule
 	\end{tabular}
 	\caption{The Forest Fire Danger Index and the Fire Danger Rating}
 	\label{table:FDR}
@@ -201,19 +218,19 @@ The daily rainfall data represents the amount of precipitation of any type obser
 
 \begin{table}[ht]
 	\centering
-	\begin{tabular}{rrrrrrrrr}
-		\hline
-		& ffdi & temp & df & rh & ws & curing & rain & vap \\ 
-		\hline
-		ffdi & 1.00 & 0.77 & 0.62 & -0.77 & 0.04 & 0.51 & -0.20 & 0.01 \\ 
-		temp & 0.77 & 1.00 & 0.43 & -0.70 & -0.18 & 0.46 & -0.10 & 0.39 \\ 
-		df & 0.62 & 0.43 & 1.00 & -0.58 & -0.09 & 0.47 & -0.37 & -0.08 \\ 
-		rh & -0.77 & -0.70 & -0.58 & 1.00 & 0.19 & -0.49 & 0.31 & 0.06 \\ 
-		ws & 0.04 & -0.18 & -0.09 & 0.19 & 1.00 & 0.01 & 0.07 & -0.16 \\ 
-		curing & 0.51 & 0.46 & 0.47 & -0.49 & 0.01 & 1.00 & -0.11 & 0.05 \\ 
-		rain & -0.20 & -0.10 & -0.37 & 0.31 & 0.07 & -0.11 & 1.00 & 0.17 \\ 
-		vap & 0.01 & 0.39 & -0.08 & 0.06 & -0.16 & 0.05 & 0.17 & 1.00 \\ 
-		\hline
+	\begin{tabular}{lrrrrrrrr}
+		\toprule
+		       & ffdi  & temp  & df    & rh    & ws    & curing & rain  & vap \\
+		\midrule
+		ffdi   & 1.00  & 0.77  & 0.62  & -0.77 & 0.04  & 0.51   & -0.20 & 0.01 \\
+		temp   & 0.77  & 1.00  & 0.43  & -0.70 & -0.18 & 0.46   & -0.10 & 0.39 \\
+		df     & 0.62  & 0.43  & 1.00  & -0.58 & -0.09 & 0.47   & -0.37 & -0.08 \\
+		rh     & -0.77 & -0.70 & -0.58 & 1.00  & 0.19  & -0.49  & 0.31  & 0.06 \\
+		ws     & 0.04  & -0.18 & -0.09 & 0.19  & 1.00  & 0.01   & 0.07  & -0.16 \\
+		curing & 0.51  & 0.46  & 0.47  & -0.49 & 0.01  & 1.00   & -0.11 & 0.05 \\
+		rain   & -0.20 & -0.10 & -0.37 & 0.31  & 0.07  & -0.11  & 1.00  & 0.17 \\
+		vap    & 0.01  & 0.39  & -0.08 & 0.06  & -0.16 & 0.05   & 0.17  & 1.00 \\
+		\bottomrule
 	\end{tabular}
 	\caption{Correlation matrix of variables}
 	\label{table:correl}
@@ -389,22 +406,21 @@ I address the class imbalance problem in two ways, first in building the model I
 
 Undersampling the no fire class addresses the problem of imbalanced classes but I also use it to reduce the serial and spatial correlation that is present in the dataset by using a ~near-maximin' sampling method thereby ensuring all the datapoints in the sample are separate from each from each other in space and time to reduce the impact of correlation. 
 
-For consistency all three of the classification techniques are estimated on the balanced training set and evaluated by  on the test data. I evaluate based on receiver operating characteristic (ROC) plots  and using 2 x 2 confusion matrices. 
+For consistency all three of the classification techniques are estimated on the balanced training set and evaluated by  on the test data. I evaluate based on receiver operating characteristic (ROC) plots  and using $2\times2$ confusion matrices. 
 
-An example confusion matrix is given in table \ref{table:ex}. 
+An example confusion matrix is given in Table~\ref{table:ex}. 
 %eg confusion matrix with ABCD
 \begin{table}[ht]
 	\centering
-	\begin{tabular}{r|rr|r}
-		& Model & & \\ 
-		\hline
-		& Prediction   & &  \\ 
-		Reference & No Fire & Fire & \\ 
-		\hline
-		No Fire & a & a & a+b \\ 
-		Fire & c & d  & c + d \\ 
-		\hline
-		 & a+c & b+d & N \\
+	\begin{tabular}{lr|rr|r|}
+    & 	\multicolumn{1}{l}{} & \multicolumn{2}{c}{\emph{Model Prediction}} \\
+    & 	\multicolumn{1}{l}{} & \multicolumn{1}{r}{No Fire} & \multicolumn{1}{r}{Fire} \\
+		\cline{3-5}
+\emph{Actual} & No Fire & a   & a   & a+b \\
+                 & 		Fire & c   & d   & c + d \\
+		\cline{3-5}
+                 & 		     & a+c & b+d & N \\
+		\cline{3-5}
 	\end{tabular}
 	\caption{Example confusion matrix}
 	\label{table:ex}
@@ -416,30 +432,17 @@ Accuracy is defined as:
 \mbox{Accuracy} = \frac{a + d}{a+b+c+d}
 \end{equation}
 
-I also report sensitivity (correctly classified fires dividied by total number of actual fires) and specificity (correctly identified non-fires divided by total number of non-fires), balanced accuracy and kappa. 
-
-\begin{equation}
+I also report sensitivity (correctly classified fires dividied by total number of actual fires) and specificity (correctly identified non-fires divided by total number of non-fires), balanced accuracy and kappa:
+\begin{align}
 \label{eq sens}
-\mbox{Sensitivity} = \frac{a }{a+b}
-\end{equation}
-
-\begin{equation}
+\mbox{Sensitivity} &= \frac{a }{a+b} \\
 \label{eq spec}
-\mbox{Specificity} = \frac{d}{c+d}
-\end{equation}
-
-
-\begin{equation}
+\mbox{Specificity} &= \frac{d}{c+d} \\
 \label{eq BA}
-\mbox{Balanced Accuracy} = \frac{\frac{a }{a+b} + \frac{d}{c+d} }{2}
-\end{equation}
-
-
-\begin{equation}
+\mbox{Balanced Accuracy} &= \frac{\frac{a }{a+b} + \frac{d}{c+d} }{2} \\
 \label{eq:K}
-\kappa = \frac{P_0 - P_c}{1-P_c}
-\end{equation}
-
+\kappa &= \frac{P_0 - P_c}{1-P_c}
+\end{align}
 where $P_0$ is the total agreement probability and $P_c$ is the “agreement” probability which is due to chance ( see \cite{kappa} for definitions )
 
 On top of the accuracy measures in equations (\ref{eq sens}), (\ref{eq spec}) and (\ref{eq BA}) the value in the bottom left of the confusion matrix (c) where we incorrectly predict ~No fire' is very important in this context. 
@@ -481,10 +484,10 @@ With the addition of our other meteorological variables in the logistic Model 3,
 % Table: Regression output
 \begin{table}
 	\begin{center}
-		\begin{tabular}{l c c c }
-			\hline
+		\begin{tabular}{llll}
+			\toprule
 			& Model 1 & Model 2 & Model 3 \\
-		\hline
+		\midrule
 		(Intercept)    & $-0.1050^{***}$ & $-18.2314^{***}$ & $-15.4002^{***}$ \\
 		& $(0.0204)$      & $(1.0391)$       & $(1.4012)$       \\
 		ffdi           & $0.0073^{***}$  & $-0.0423^{***}$  & $-0.0370^{***}$  \\
@@ -503,13 +506,13 @@ With the addition of our other meteorological variables in the logistic Model 3,
 		&                 &                  & $(0.0057)$       \\
 		vap            &                 &                  & $0.0244^{***}$   \\
 		&                 &                  & $(0.0062)$       \\
-		\hline
+		\midrule
 		AIC            & 31809.3877      & 31229.3462       & 26589.0141       \\
 		BIC            & 31825.4721      & 31277.5994       & 26659.9683       \\
 		Log Likelihood & -15902.6938     & -15608.6731      & -13285.5071      \\
 		Deviance       & 31805.3877      & 31217.3462       & 26571.0141       \\
 		Num. obs.      & 22976           & 22976            & 19610            \\
-		\hline
+		\bottomrule
 		\multicolumn{4}{l}{\scriptsize{$^{***}p<0.001$, $^{**}p<0.01$, $^*p<0.05$}}
 	\end{tabular}
 	\caption{Logistic regressions output}
@@ -540,9 +543,9 @@ Grassland curing exhibits a right skewed function, having a positive effect on t
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{rrrrr}
-		\hline
+		\toprule
 		& Estimate & Std. Error & z value & Pr($>$$|$z$|$) \\ 
-		\hline
+		\midrule
 		(Intercept) & -3.1484 & 0.2757 & -11.4210 & 0.0000 \\ 
 		ns(ffdi, 5)1 & -0.2905 & 0.3613 & -0.8043 & 0.4213 \\ 
 		ns(ffdi, 5)2 & -0.2304 & 0.4625 & -0.4982 & 0.6183 \\ 
@@ -566,7 +569,7 @@ Grassland curing exhibits a right skewed function, having a positive effect on t
 		ns(curing, 6)6 & -0.4909 & 0.0817 & -6.0066 & 0.0000 \\ 
 		rain & -0.0286 & 0.0056 & -5.0703 & 0.0000 \\ 
 		vap & -0.0003 & 0.0067 & -0.0504 & 0.9598 \\ 
-		\hline
+		\bottomrule
 	\end{tabular}
 	\caption{Regression output for Model 4}
 	\label{table:logf}
@@ -598,15 +601,15 @@ The focus of this project is to build an accurate predictor of fire ignition, so
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{r|rr|rr|rr|rr}
-		\hline
+		\toprule
 		& Model 1 &  & Model 2 &  & Model 3 &  & Model 4 & \\ 
-		\hline
+		\midrule
 		& Actual   &  &  &  &  & & & \\ 
 		Predict & No Fire & Fire & No Fire & Fire & No Fire & Fire & No Fire & Fire\\ 
-		\hline
+		\midrule
 No Fire & 0.5959 & 0.0030 & 0.4457 & 0.0019 & 0.5111 & 0.0021 & 0.5807 & 0.0016 \\ 
 Fire & 0.3989 & 0.0022 & 0.5490 & 0.0034 & 0.4838 & 0.0030 & 0.4142 & 0.0035 \\ 
-		\hline
+		\bottomrule
 	\end{tabular}
 	\caption{Confusion Matrices for Models 1, 2 \& 3 cutoff value 0.5}
 	\label{table:cm2}
@@ -618,15 +621,15 @@ Fire & 0.3989 & 0.0022 & 0.5490 & 0.0034 & 0.4838 & 0.0030 & 0.4142 & 0.0035 \\
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{rrrrr}
-		\hline
+		\toprule
 		& 1 & 2 & 3 & 4 \\ 
-		\hline
+		\midrule
 Sensitivity & 0.5990 & 0.4481 & 0.5137 & 0.5837 \\ 
 Specificity & 0.4267 & 0.6476 & 0.5854 & 0.6920 \\ 
 Balanced Accuracy & 0.5129 & 0.5479 & 0.5495 & 0.6378 \\ 
 Accuracy & 0.5981 & 0.4492 & 0.5141 & 0.5842 \\ 
 Kappa & 0.0007 & 0.0018 & 0.0021 & 0.0067 \\
-		\hline
+		\bottomrule
 	\end{tabular}
 		\caption{Accuracy for Models 1, 2, 3 \& 4 cutoff value 0.5}
 		\label{table:acc2}
@@ -680,15 +683,15 @@ The classification trees consistently place  curing value and drought factor hig
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{r|rr|rr}
-		\hline
+		\toprule
 		  & Tree 1 &  & Tree 2 & \\ 
-		\hline
+		\midrule
 		& Actual   &  &  &   \\ 
 		Predict  & No Fire & Fire & No Fire & Fire\\ 
-		\hline
+		\midrule
 No Fire  & 0.5553 & 0.0017 & 0.5088 & 0.0014 \\ 
 Fire  & 0.4394 & 0.0036 & 0.4859 & 0.0038 \\ 
-		\hline
+		\bottomrule
 	\end{tabular}
 	\caption{Confusion Matrices for trees cutoff value 0.5}
 	\label{table:tcm2}
@@ -699,15 +702,15 @@ Fire  & 0.4394 & 0.0036 & 0.4859 & 0.0038 \\
 \begin{table}[H]
 	\centering
 	\begin{tabular}{rrr}
-		\hline
+		\toprule
 		 & Tree 1 & Tree 2 \\ 
-		\hline
+		\midrule
 		Sensitivity  & 0.5582 & 0.5115 \\ 
 		Specificity & 0.6832 & 0.7273 \\  
 		Balanced Accuracy  & 0.6207 & 0.6194 \\ 
 		Accuracy  & 0.5589 & 0.5127 \\ 
 		Kappa & 0.0055 & 0.0051 \\ 
-		\hline
+		\bottomrule
 	\end{tabular}
 	\caption{Accuracy for trees cutoff value 0.5}
 	\label{table:tacc2}
@@ -736,15 +739,15 @@ Table \ref{table:cmrf} contains the confusion matrix for the forest predictions 
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{rrr}
-		\hline
+		\toprule
 		& Random Forest &  \\ 
-		\hline
+		\midrule
 		& Actual   &   \\ 
 		Predict  & No Fire & Fire \\ 
-		\hline
+		\midrule
 		No Fire & 0.6093 & 0.0016 \\ 
 		Fire & 0.3856 & 0.0035 \\ 
-		\hline
+		\bottomrule
 	\end{tabular}
 		\caption{Confusion matrix for random forest cutoff value 0.5}
 		\label{table:cmrf}
@@ -753,15 +756,15 @@ Table \ref{table:cmrf} contains the confusion matrix for the forest predictions 
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{rr}
-		\hline
+		\toprule
 		& Random Forest \\ 
-		\hline
+		\midrule
 		Sensitivity & 0.6124 \\ 
 		Specificity & 0.6771 \\ 
 		Balanced Accuracy & 0.6447 \\ 
 		Accuracy & 0.6127 \\ 
 		Kappa & 0.0075 \\ 
-		\hline
+		\bottomrule
 	\end{tabular}
 			\caption{Accuracy measure random forest cutoff value 0.5}
 			\label{table:accrf}
@@ -790,11 +793,11 @@ Finally figure \ref{fig:rocrf} shows the ROC curve for the random forest, a sing
 \begin{table}[h]
 	\centering
 	\begin{tabular}{r|rrrr}
-		\hline
+		\toprule
 		& Model 3 & Model 4 & Tree & Forest \\ 
-		\hline
+		\midrule
 		AUC & 0.58 & 0.69 & 0.65 & 0.70 \\ 
-		\hline
+		\midrule
 	\end{tabular}
 	\caption{Areas under ROC curve for logistic model, classification trees \& forest}
 	\label{table:AUC}
