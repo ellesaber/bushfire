@@ -1,30 +1,291 @@
 ---
-title: "Bushfires in R"
-author: "Elle Saber"
-date: "20 January 2016"
-output: beamer_presentation
+title: "Bushfire Ignition in Victoria"
+author: "Elle Saber "
+highlighter: highlight.js
+output: pdf_document
+job: null
+knit: slidify::knit2slides
+mode: selfcontained
+hitheme: tomorrow
+subtitle: An adventure in wrangling spatial data
+framework: io2012
+widgets: mathjax
 ---
 
-## Modelling Probability of Ignition of Bushfires in Victoria 
 
-Data Processing involved with the honours project 
+```{r, fig.width=12,echo=FALSE, fig.align='center'}
+library(png)
+library(grid)
+img <- readPNG("/Users/ellesaber/bushfire/numbat_pres/cfa.png")
+ grid.raster(img)
+```
 
-## Slide with Bullets
-```{r mysize=TRUE, size='small'}
+---
+
+# The Fire Danger Rating System
+
+The McArthur Forest Fire Danger Index:
+
+$$latex F=2.0 exp(-0.450 + 0.987 \ln(D)-0.0345H+0.0338T+0.0234V) $$
+
+
+```{r, fig.width=7,echo=FALSE, fig.align='center'}
+library(png)
+library(grid)
+img <- readPNG("/Users/ellesaber/Documents/HonsData/RMD/fdr-chart.png")
+ grid.raster(img)
+```
+
+---
+
+# WRF Model Data in NetCDF Format
+
+```{r message=FALSE}
 library(ncdf)
-temp.nc <- open.ncdf("./TMAX1984-2009.nc")
+temp.nc <- open.ncdf("./tmax_subset.nc")
 temp.nc
+```
+
+---
+
+# WRF Data Time Series - Silvan 
+
+```{r, fig.width=12,echo=FALSE, fig.align='center'}
+library(ggplot2)
+library(tidyr)
+load("/Users/ellesaber/Documents/HonsData/analysis/silvan.rda")
+
+silv_long <- gather(silvan, key = var, value = val, col=c(4,8:11))
+ggplot(silv_long, aes(x=date, y=val)) + geom_line(color="darkblue") + 
+  facet_grid(var~., scales="free") + theme_bw() + 
+  scale_color_brewer(palette = "Dark2") +
+  ggtitle("Meteorological Variables") + 
+  xlab("Date") + 
+  ylab("Value")
 
 ```
 
-## Fire Map
+---
 
-![Map of Fire Occurence](figures/Data/firemap.pdf)
+# WRF Model Temperature 
 
-## NCDF Temp Data random Day
+```{r, echo=F, message=F, fig.align='center', warning=FALSE, fig.width=12}
+library(ncdf)
+library(raster)
+library(rasterVis)
+sub.temp <-open.ncdf("./tmax_subset.nc")
+ras <- raster("./tmax_subset.nc")
+myTheme=rasterTheme(region=brewer.pal('Reds', n=9))
 
-![Max Temperature](figures/Data/tmax.pdf)
+levelplot(ras, margin=FALSE, par.settings=myTheme)
+```
 
-## NCDF time series
+---
 
-![Time series Silvan](figures/Data/silvan.pdf)
+# Shapefiles
+
+```{r, echo=F, message=F, fig.align='center', warning=FALSE, fig.width=12}
+
+# layerName is the name of the unzipped shapefile without file type extensions 
+layerName <- "STE11aAust"  
+# Read in the data
+aus.shape <- readOGR(dsn="/Users/ellesaber/bushfire/data_raw/shps", layer=layerName) 
+#remove other polygons to leave only Victoria
+vic.shp <- aus.shape[aus.shape$STATE_NAME == "Victoria",]
+plot(vic.shp)
+
+```
+
+---
+
+
+# ABS Statistical Divisions
+
+```{r, echo = FALSE, message = FALSE, fig.align = 'center', warning = FALSE, fig.width=12}
+# layerName is the name of the unzipped shapefile without file type extensions 
+layerName <- "SD11aAust"  
+# Read in the data
+aus.shape <- readOGR(dsn="/Users/ellesaber/bushfire/data_raw/shps", layer=layerName) 
+#remove other polygons to leave only Victoria
+vic.shp <- aus.shape[aus.shape$STATE_CODE == 2,]
+plot(vic.shp)
+```
+
+---
+
+# Fire & Incident Reporting Service 
+
+```{r, fig.width=13,echo=FALSE, fig.align='center'}
+
+library(png)
+library(grid)
+img <- readPNG("/Users/ellesaber/bushfire/numbat_pres/firs.png")
+ grid.raster(img)
+```
+
+---
+
+# Australian Map Grid Zones
+
+```{r, fig.width=10,echo=FALSE, fig.align='center'}
+img <- readPNG("/Users/ellesaber/bushfire/numbat_pres/zonemap.png")
+ grid.raster(img)
+
+```
+
+---
+# Fire Map
+
+```{r, echo=F, message=F, fig.align='center', warning=FALSE, fig.width=12}
+library(ggplot2)
+library(data.table)
+library(ggmap)
+library(sp)
+library(rgdal)
+library(dplyr)
+library(tidyr)
+
+#datset
+load("/Users/ellesaber/Documents/HonsData/fire_occur.rda")
+#mappy stuff
+
+box <- make_bbox(long, lat, fire.dt, f=0.05)
+myMap <- get_stamenmap(bbox=box, zoom=6, maptype = "toner", crop=TRUE)
+#map of vic
+vicmap <- ggmap(myMap,
+      extent = "device")
+#add in fires!
+firemap <- vicmap +geom_point(aes(x=long, y=lat), data=fire.dt, alpha=.5, color="red3")
+firemap
+
+```
+
+---&twocol
+
+# Grassland Curing & Vapour Pressure 
+*** =left
+```{r, echo=F, message=F, fig.align='center', warning=FALSE, fig.width=6}
+library(raster)
+library(rasterVis)
+library(RColorBrewer)
+library(gridExtra)
+
+gs <- raster("/Users/ellesaber/Documents/HonsData/grasslandcuring/file20090125-20090201.nc", varname="curing")
+
+plot(gs, col=bpy.colors(10))
+
+
+
+```
+
+*** =right
+
+```{r, echo=F, message=F, fig.align='center', warning=FALSE, fig.width=6}
+library(raster)
+library(rasterVis)
+library(RColorBrewer)
+library(gridExtra)
+
+gs <- raster("/Users/ellesaber/Documents/HonsData/grasslandcuring/file20090125-20090201.nc", varname="curing")
+  
+e <- extent(gs) #upper and lower limits to contain VIC
+
+ps <- raster("/Users/ellesaber/Documents/HonsData/vapour/20090207.nc")
+ps <- crop(ps, e)
+
+plot(ps, cm.colors(10))
+
+```
+
+---
+
+# Grassland Curing Evolution
+
+```{r, echo=F, message=F, fig.align='center', warning=FALSE, fig.width=13}
+library(ggplot2)
+library(dplyr)
+
+load("/Users/ellesaber/bushfire/robject/dat0.rda")
+
+
+K <- dat0 %>% 
+  group_by(date,div) %>% 
+  summarise( avg=mean(curing, na.rm=TRUE), max=max(curing, na.rm=TRUE), min=min(curing, na.rm=TRUE))
+K <- gather(K, key=var, value = val, 3:5)
+vec <- c("2000-10-01", "2001-10-01", "2002-10-01", "2003-10-01", "2003-10-01", "2004-10-01",
+         "2005-10-01", "2006-10-01", "2007-10-01", "2008-10-01", "2009-10-01")
+vec <- as.Date(vec)
+
+K$seas <- findInterval(K$date, vec)
+K$seas <- ordered(K$seas,
+                  levels = c(1:11),
+                  labels = c("2000", "2001", "2002", "2003", "2004", "2005", 
+                             "2006", "2007", "2008", "2009", "2010"))
+
+K <- filter(K, seas=="2008")
+
+ggplot(K, aes(x=date, y=val, color=var))+
+  geom_line()+facet_wrap(~div) +
+  ggtitle("Grassland Curing over 2008 Fire Season") + 
+  xlab("Date") + 
+  ylab("Grassland Curing Value")
+
+```
+
+---
+
+# The Fire Danger Index and Fire Occurence
+
+```{r, echo=F, message=F, fig.align='center', warning=FALSE, fig.width=13}
+library(ggplot2)
+
+load("/Users/ellesaber/bushfire/robject/sub.rda")
+newsub$fire <- as.factor(newsub$fire)
+
+ggplot(newsub, aes(ffdi, color=fire)) + geom_density() + facet_wrap(~div) + scale_x_log10() +   scale_color_brewer(palette = "Dark2")
+
+```
+
+---
+
+# The Fire Danger Index and Temperature 
+
+```{r, echo=F, message=F, fig.align='center', warning=FALSE, fig.width=13}
+
+library(ggplot2)
+
+load("/Users/ellesaber/bushfire/robject/sub.rda")
+newsub$fire <- as.factor(newsub$fire)
+
+ggplot(newsub, aes(ffdi, temp, color=fire)) + geom_density2d() + facet_wrap(~div) +   scale_color_brewer(palette = "Dark2")
+```
+
+---
+
+# The Fire Danger Index and Grassland Curing 
+
+```{r, echo=F, message=F, fig.align='center', warning=FALSE, fig.width=13}
+ggplot(newsub, aes(curing, ffdi, color=fire)) + geom_density2d() + facet_wrap(~div) +   scale_color_brewer(palette = "Dark2")
+
+```
+
+---
+# Data sets
+
+- WRF Model
+- CFA Fire & Indcident Reporting Database
+- CFA Grassland Curing
+- BOM Vapour Pressure & Precipitation 
+
+# Key R Packages
+
+- dplyr & tidyr 
+- rvest
+- NCDF
+- raster
+- sp
+- rgdal
+
+
+
+
