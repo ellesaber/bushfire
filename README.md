@@ -6,6 +6,7 @@ To do list:
 - transformations to symmetrise
 - plots of predictors (pairwise densities)
 - read papers using splines, RF check description/explanation 
+- Alex's comment on ratio? When ffdi in certain band look at proportion of fires. 
 
 - International Journal of Wildland Fire (http://www.publish.csiro.au/?nid=114&issue=6993)
 - more sophisticated method than previous analyses, fire journals
@@ -18,4 +19,4 @@ Extra distractions:
     Look up other variables and see their values, can we see a difference?
 
 Completed:
-X add fire danger rating to data 
+- add fire danger rating to data
