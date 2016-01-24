@@ -21,7 +21,7 @@ webs <- list ("http://opendap.bom.gov.au:8080/thredds/catalog/daily_rain_5km/200
 # preamble required for file url
 pre <- "http://opendap.bom.gov.au:8080/thredds/fileServer/daily_rain_5km/"
 
-#function that gets file urls from websites 
+# function that gets file urls from websites 
 get_html_text <- function(url, css_or_xpath="*"){
     html_text(
       html_nodes(
@@ -40,7 +40,7 @@ ls <- ls[sub]
 fileurl <- paste0(pre, substring(ls, 37, 40), "/", ls)
 filename <- paste0("./data_raw/rain/", substring(ls, 37, 47))
 
-#download files 
+# download files 
 for (i in 1:length(fileurl)) 
 {
   download.file(fileurl[i], filename[i], 
@@ -49,7 +49,7 @@ for (i in 1:length(fileurl))
 
 #### Read in files ####
 
-#read in WRF gridpoints 
+# read in WRF gridpoints 
 load("./robject/viclonlat.rda")
 
 # number of files
@@ -63,14 +63,14 @@ lonlat <- dplyr::select(vic.dt, LONG, LAT)
 
 ## file the median curing value in a 5k buffer around each lon/lat coord in vic
 ## add these values to a datatable. 
-#open all the files as rasters
+# open all the files as rasters
 ras <- lapply(filename,raster) 
-#turns into RasterStack
+# turns into RasterStack
 STACK <- stack(ras)
 e <- extent(140, 150, -40, -30) #upper and lower limits to contain VIC
-#crops as per above limits
+# crops as per above limits
 rc <- crop(STACK, e)
-#extracts median value from 5000m radius around lonlat points
+# extracts median value from 5000m radius around lonlat points
 ext <- as.data.table(raster::extract(rc, lonlat, buffer=5000, fun=median))
 
 dates <- substring(filename, 17,24)
@@ -90,12 +90,12 @@ rain.dt[,"date":= as.Date(date, "%Y%m%d")]
 save(rain.dt, file="./robject/rain.rda")
 #### add into dataset ####
 
-#load in datatable
+# load in datatable
 load("./robject/dat0.rda")
 
-#add rain to datatable
+# add rain to datatable
 dat0 <- left_join(dat0, rain.dt, by=c("coord", "date"))
 
-#save!
+# save!
 save(dat0, file="./robject/dat0.rda")
 

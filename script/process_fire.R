@@ -7,13 +7,13 @@ library(data.table)
 library(ggmap)
 library(dplyr)
 
-#read in CSV of fire occurence data
+# read in CSV of fire occurence data
 fires.raw <- read.csv("./data_raw/grassfire.csv", head=TRUE, as.is=TRUE)
-#Sense check on import
+# Sense check on import
 summary(fires.raw)
 
-#easting should not be more than 6 figures and northing not more than 5000000**
-#convert incident_date&time to date format add in column with date only
+# easting should not be more than 6 figures and northing not more than 5000000**
+# convert incident_date&time to date format add in column with date only
 x <- as.Date(fires.raw$incident_date, "%d/%m/%y %H:%M:%S")
 fires.raw$date <- x
 # remove comma and turn eastings and northings into numbers
@@ -26,14 +26,14 @@ head(fires.raw)
 
 ## Convert AMG coordinates to Longitude and Latitude ##
 # prepare UTM coordinates matrix
-#subset for different zones
+# subset for different zones
 zone55 <- filter(fires.raw, amg_zone==55)
 zone54 <- filter(fires.raw, amg_zone==54)
 # fires.other <- subset(fires, amg_zone != 55 & amg_zone != 54)
 # convert to spatial points with amg projection
 utmcoor55 <- SpatialPoints(cbind(zone55$amg_e, zone55$amg_n), proj4string=CRS("+proj=utm +zone=55 +south +ellps=aust_SA +units=m +no_defs")) 
 utmcoor54 <- SpatialPoints(cbind(zone54$amg_e, zone54$amg_n), proj4string=CRS("+proj=utm +zone=54 +south +ellps=aust_SA +units=m +no_defs ")) 
-#zone55$amg_e and zone55$amg_n are corresponding to AMG Easting and Northing, respectively.
+# zone55$amg_e and zone55$amg_n are corresponding to AMG Easting and Northing, respectively.
 
 # converting from australian map grid to longitude and lattitude 
 longlatcoor55 <- spTransform(utmcoor55,CRS("+proj=longlat"))
@@ -41,7 +41,7 @@ longlatcoor54 <- spTransform(utmcoor54,CRS("+proj=longlat"))
 ## Convert Spatial dataframes to normal data frames
 longlat55 <- as.data.frame(longlatcoor55)
 longlat54 <- as.data.frame(longlatcoor54)
-#Add in Longlat values to fire
+# Add in Longlat values to fire
 fires.55 <- data.frame(date = zone55$date, suburb = zone55$suburb, 
                        size = zone55$size, 
                        long = longlat55$coords.x1, 
@@ -56,8 +56,8 @@ fires.df <- rbind(fires.55, fires.54)
 fires.df <- filter(fires.df, between(lat, -90, 90))
 fires.df <- filter(fires.df, between(long, -180, 180))
 
-#load in shp file
-#load in shape file
+# load in shp file
+# load in shape file
 # layerName is the name of the unzipped shapefile without file type extensions 
 layerName <- "STE11aAust"  
 # Read in the data
@@ -68,13 +68,13 @@ summary(aus.shape)
 ## subset for dates before 1/1/2010 to align with weather data time span
 enddate <- as.Date("1/1/10", "%d/%m/%y") 
 fires.df <- filter(fires.df, date < enddate )
-#create spatial points from longlats
+# create spatial points from longlats
 firepoints <- SpatialPoints(cbind(fires.df$long, fires.df$lat))
-#code from stack overflow on how to get states from long lat coordinates
+# code from stack overflow on how to get states from long lat coordinates
 proj4string(firepoints) <- proj4string(aus.shape)
-#as characters
+# as characters
 result <- as.character(over(firepoints, aus.shape)$STATE_NAME)
-#sense check
+# sense check
 summary(result)
 fires.df$state <- result
 fires.df <- filter(fires.df, state == "Victoria")
@@ -112,18 +112,18 @@ fire.dt <- data.table(date=fires.df$date, suburb=fires.df$suburb,size=fires.df$s
                          long=fires.df$long,lat=fires.df$lat,s_n=assign.s_n,w_e=assign.w_e)
 
 
-#Save fires file
+# Save fires file
 save(fire.dt, file="./robject/firedt.rda")
 
 #### Add Fire Dummy ####
 
-#load files
+# load files
 load("./robject/dtfull.rda")
 
-#convert dates from origin of 31/12/1999 and make new column
+# convert dates from origin of 31/12/1999 and make new column
 dt.full$date <- as.Date(dt.full$date, origin="1999-12-31")
 
-#make new column for fire occurence dummy filled with zeros
+# make new column for fire occurence dummy filled with zeros
 # duplicate values in fire occurence data, currently deleting duplicates*
 # need to check if it is a mistake or not and amalgamate them if not*
 fire.dt[ ,fire:=1L]
@@ -139,19 +139,19 @@ setnames(dat, oldnames, newnames)
 
 #### Subsetting Data set ####
 
-#subset to only coordinates where fires have occurred
+# subset to only coordinates where fires have occurred
 fire.dt$coord <- paste(fire.dt$s_n, fire.dt$w_e, sep=".")
 dat$coord <- paste(dat$s_n, dat$w_e, sep=".")
 
 dat0 <- dplyr::filter(dat, coord %in% fire.dt$coord)
 
-#subset to fire season only
-#create month variable
+# subset to fire season only
+# create month variable
 dat0[ ,month:=month(dat0$date)]
 
-#fire season consists of oct, nov, dec, jan, feb, march
+# fire season consists of oct, nov, dec, jan, feb, march
 fireseas <- c(10, 11, 12, 1, 2, 3)
-#filter dataset to only include fire season
+# filter dataset to only include fire season
 dat0 <- dplyr::filter(dat0, month %in% fireseas)
 
 dat0$div <- as.factor(dat0$div)

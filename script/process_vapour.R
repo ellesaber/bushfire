@@ -20,7 +20,7 @@ webs <- list ("http://opendap.bom.gov.au:8080/thredds/catalog/daily_vapour_press
 # preamble required before address for downloading files
 pre <- "http://opendap.bom.gov.au:8080/thredds/fileServer/daily_vapour_pressure_9am_5km/"
 
-#function that reads the xml nodes for each website
+# function that reads the xml nodes for each website
 get_html_text <- function(url, css_or_xpath="*"){
   html_text(
     html_nodes(
@@ -31,15 +31,15 @@ get_html_text <- function(url, css_or_xpath="*"){
 # gets list of file urls to download 
 ls <- lapply(webs, get_html_text, css_or_xpath="tr~ tr+ tr a tt")
 ls <- unlist(ls)
-#filters to only include fire season
+# filters to only include fire season
 sub <- which(substring(ls, 52, 53) %in% c("01", "02", "03", "10", "11", "12"))
 ls <- ls[sub]
 
-#makes file urls 
+# makes file urls 
 fileurl <- paste0(pre, substring(ls, 48, 51), "/", ls)
 filename <- paste0("./data_raw/vapour/", substring(ls, 48, 58))
 
-#download files 
+# download files 
 for (i in 1:length(fileurl)) 
 {
   download.file(fileurl[i], filename[i], 
@@ -49,7 +49,7 @@ for (i in 1:length(fileurl))
 
 #### Read in files ####
 
-#read in WRF gridpoints 
+# read in WRF gridpoints 
 load("./robject/viclonlat.rda")
 
 # number of files
@@ -62,18 +62,18 @@ lonlat <- dplyr::select(vic.dt, LONG, LAT)
 
 ## file the median curing value in a 5k buffer around each lon/lat coord in vic
 ## add these values to a datatable. 
-#open all the files as rasters
+# open all the files as rasters
 ras <- lapply(filename,raster) 
-#turns into RasterStack
+# turns into RasterStack
 STACK <- stack(ras)
 e <- extent(140, 150, -40, -30) #upper and lower limits to contain VIC
-#crops as per above limits
+# crops as per above limits
 rc <- crop(STACK, e)
-#extracts median value from 5000m radius around lonlat points
+# extracts median value from 5000m radius around lonlat points
 ext <- as.data.table(raster::extract(rc, lonlat, buffer=5000, fun=median))
 
 dates <- substring(filename, 19,26)
-#renames columns 
+# renames columns 
 oldnames <- colnames(ext)
 setnames(ext, oldnames, dates)
 
@@ -83,16 +83,16 @@ vap.dt <- as.data.table(cbind("coord"=paste(vic.dt$s_n, vic.dt$w_e, sep="."), ex
 vap.dt <- as.data.table(gather(vap.dt, key="date", value="vapour", col=-1))
 vap.dt[,"date":= as.Date(date, "%Y%m%d")]
 
-#save vap.dt
+# save vap.dt
 save(vap.dt, file="./robject/vapour.rda")
 
 #### add into dataset ####
 
-#load in datatable
+# load in datatable
 load("./robject/dat0.rda")
 
-#add vapour to datatable
+# add vapour to datatable
 dat0 <- left_join(dat0, vap.dt, by=c("coord", "date"))
-#save!
+# save!
 save(dat0, file="./robject/dat0.rda")
 

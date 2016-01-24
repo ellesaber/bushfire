@@ -19,16 +19,16 @@ latmat <- raster(subset.name, varname = "XLAT")
 lonmat <- raster(subset.name, varname = "XLONG")
 # for each WE-SN coordinate get Long and Lat 
 
-# Conver rasters to datafram
+# Convert rasters to dataframe
 plat <- data.frame(rasterToPoints(latmat))
 colnames(plat) <- c("w_e", "s_n", "LAT")
 plon <- data.frame(rasterToPoints(lonmat))
 colnames(plon) <- c("w_e", "s_n", "LONG")
 df.geo <- left_join(plat, plon, by=c("w_e", "s_n"))
 
-#Create data frame with just longitude and latitude and switch order
+# Create data frame with just longitude and latitude and switch order
 lonlat <- dplyr::select(df.geo, LONG, LAT)
-#create spatial points from long lat coordinates
+# create spatial points from long lat coordinates
 points <- SpatialPoints(lonlat)
 
 #### Use shp file to find Aus states from Long and Lat ####
@@ -41,7 +41,6 @@ if (!file.exists(file)) {
   unzip(file,exdir="./data_raw/shps")
 }
 
-
 # Show the unzipped files 
 list.files("./data_raw/shps")
 
@@ -49,17 +48,16 @@ list.files("./data_raw/shps")
 layerName <- "STE11aAust"  
 # Read in the data
 aus.shape <- readOGR(dsn="./data_raw/shps", layer=layerName) 
-#remove other polygons to leave only Victoria
+# remove other polygons to leave only Victoria
 vic.shp <- aus.shape[aus.shape$STATE_NAME == "Victoria",]
 
-#code from stack overflow on how to get states from long lat coordinates
+# code from stack overflow on how to get states from long lat coordinates
 proj4string(points) <- proj4string(vic.shp)
-#as characters
+# as characters
 result <- as.character(over(points, vic.shp)$STATE_NAME)
-#sense check
+# sense check
 summary(result)
 df.geo$state <- result
-
 
 #### Add in statistical division ####
 
@@ -78,11 +76,11 @@ aus.shape <- readOGR(dsn="./data_raw/shps", layer=layerName)
 #remove other polygons to leave only Victoria
 vic.shp <- aus.shape[aus.shape$STATE_CODE == 2,]
 
-#code from stack overflow on how to get states from long lat coordinates
+# code from stack overflow on how to get states from long lat coordinates
 proj4string(points) <- proj4string(vic.shp)
-#as characters
+# as characters
 result <- as.character(over(points, vic.shp)$SD_NAME11)
-#sense check
+# sense check
 summary(result)
 df.geo$div <- result
 
@@ -100,38 +98,37 @@ if (!file.exists(file)) {
 layerName <- "SSD11aAust"  
 # Read in the data
 aus.shape <- readOGR(dsn="./data_raw/shps", layer=layerName) 
-#remove other polygons to leave only Victoria
+# remove other polygons to leave only Victoria
 vic.shp <- aus.shape[aus.shape$STATE_CODE == 2,]
 
-#code from stack overflow on how to get states from long lat coordinates
+# code from stack overflow on how to get states from long lat coordinates
 proj4string(points) <- proj4string(vic.shp)
-#as characters
+# as characters
 result <- as.character(over(points, vic.shp)$SSD_NAME11)
-#sense check
+# sense check
 summary(result)
 df.geo$subdiv <- result
 vic.dt <- data.table(filter(df.geo, state == "Victoria"))
-
 
 #### Add in district vic points ####
 layerName <- "cfa_district" 
 cfa.dist <- readOGR(dsn="./data_raw/shps", layer=layerName) 
 
-#check out shape file
+# check out shape file
 summary(cfa.dist)
 viclonlat <- dplyr::select(vic.dt, LONG, LAT)
 viclonlat <- SpatialPoints(viclonlat)
 proj4string(viclonlat) <- proj4string(cfa.dist)
 # find the state for each coordinaate using the shp file (*takes awhile)
 result <- as.factor(over(viclonlat, cfa.dist)$CFA_DIST)
-#sense check
+# sense check
 head(result)
 summary(result)
 
-#add district column to vic.dt
+# add district column to vic.dt
 vic.dt[ , "district":=result]
 
-#Save file
+# Save file
 save(vic.dt, file="./robject/viclonlat.rda")
 
 #### Process all NCDF files, subset for Victoria and 2000-2010 #### 
@@ -196,7 +193,7 @@ ws.dt <- data.table(melt(ws.arr, varnames = c("w_e", "s_n", "date"),
 
 rm(ws.arr)
 
-#merge data tables #Is there a function to merge multiple data tables?#
+# merge data tables #Is there a function to merge multiple data tables?#
 dt.full <- inner_join(temp.dt, vic.dt, by = c("w_e", "s_n"))
 
 dt.full <- left_join(dt.full, ffdi.dt, by = c("w_e", "s_n", "date"))

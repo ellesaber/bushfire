@@ -17,13 +17,13 @@ ls <- web %>%
 
 pre <- "http://opendap.bom.gov.au:8080//thredds/fileServer/curing_modis_500m_8-day/aust_regions/vic/netcdf/mapvictoria/"
 
-#list of file URLS
+# list of file URLS
 fileurl <- paste(pre, ls, sep="")
-#dates to add to files names
+# dates to add to files names
 filename <- substring(fileurl,151,170)
 
 
-#subset to years before 2010 and fire season only
+# subset to years before 2010 and fire season only
 sub <- which(substring(filename, 1, 4)<2010)
 fs <- which(as.numeric(substring(filename, 5,6)) %in% c(1, 2, 3, 12, 11, 10) |
             as.numeric(substring(filename, 14,15)) %in% c(1, 2, 3, 12, 11, 10))
@@ -34,7 +34,7 @@ fileurl <- fileurl[sub]
 filename <- filename[sub]
 filename <- paste("./data_raw/curing/", filename, sep="")
 
-#download file 
+# download file 
 for (i in 1:length(fileurl)) 
 {
   download.file(fileurl[i], filename[i], 
@@ -43,7 +43,7 @@ for (i in 1:length(fileurl))
 
 #### Read in curing and match to wrf grids ####
 
-#read in WRF gridpoints 
+# read in WRF gridpoints 
 load("./robject/viclonlat.rda")
 
 # number of files
@@ -67,13 +67,13 @@ for (j in 1:nfiles){
 
 #### Make into nice datatable ####
 
-#find start and end dates for each set of files
-#start date for curing raster
+# find start and end dates for each set of files
+# start date for curing raster
 strt <- as.Date(substring(filename, 19, 26),"%Y%m%d")
-#date of the next file last entry is NA because no more files
+# date of the next file last entry is NA because no more files
 nxt <- as.Date(substring(filename[-1], 19, 26),"%Y%m%d")-1
 nxt[221] <- as.Date("20091231", "%Y%m%d")
-#fill end date with the earliest date of the file name
+# fill end date with the earliest date of the file name
 # or the day before the next file begins
 
 end <- mapply(min, as.Date(substring(filename, 28, 35),"%Y%m%d"), nxt)
@@ -83,7 +83,7 @@ int <- interval(strt, end)
 
 dates <- seq(strt[1], end[221], by="day")
 dates <- dates[which(month(dates) %in% c(1,2,3,10,11,12))]
-#create empty dataframe and name columns appropriately
+# empty dataframe and name columns appropriately
 gscuring <- as.data.table(matrix(0, nrow=nrow(lonlat),ncol=length(dates)))
 old <- colnames(gscuring)
 setnames(gscuring, old, as.character(dates))
@@ -103,7 +103,7 @@ save(gscuring, file="./robject/gscuring.rda")
 
 load("./robject/dat0.rda")
 
-#filter so only have coordinates cfa have turned out to
+# filter so only have coordinates cfa have turned out to
 gscuring <- filter(gscuring, coord %in% dat0$coord)
 gscuring <- filter(gscuring, date %in% dat0$date)
 
