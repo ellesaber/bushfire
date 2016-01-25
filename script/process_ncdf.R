@@ -116,7 +116,7 @@ df.geo$subdiv <- result
 vic.dt <- data.table(filter(df.geo, state == "Victoria"))
 
 #### Add in district vic points ####
-url <- 'https://www.data.vic.gov.au/data/dataset/country-fire-authority-cfa-district-boundaries-vicmap-admin'
+url <- 'http://services.land.vic.gov.au/SpatialDatamart/publicAccessOrderDownload.html?fileName=SDM233160.zip&orderId=233160'
 file <- paste("./data_raw/shps",basename(url),sep='/')
 if (!file.exists(file)) {
   download.file(url, file)
