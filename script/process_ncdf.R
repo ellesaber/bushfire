@@ -1,6 +1,8 @@
 #### Packages ####
 
-library(ncdf)
+#library(ncdf)
+#library(RNetCDF)
+library(ncdf4)
 library(raster)
 library(rgdal)
 library(sp)
@@ -10,8 +12,11 @@ library(dplyr)
 #### Get lon/lats from smaller NCDF file ####
 
 # Read netcdf into R
-subset.name <- "./data_raw/weather/tmax_subset.nc"
-sub.temp <- open.ncdf(subset.name)
+#subset.name <- "./data_raw/weather/tmax_subset.nc"
+subset.name <- "./data_raw/weather/TMAX1984-2009.nc"
+#sub.temp <- open.ncdf(subset.name)
+#sub.temp <- open.nc(subset.name)
+sub.temp <- nc_open(subset.name)
 
 # Extract the geo info
 # Grab the lat and lon from the data
@@ -111,6 +116,12 @@ df.geo$subdiv <- result
 vic.dt <- data.table(filter(df.geo, state == "Victoria"))
 
 #### Add in district vic points ####
+url <- 'https://www.data.vic.gov.au/data/dataset/country-fire-authority-cfa-district-boundaries-vicmap-admin'
+file <- paste("./data_raw/shps",basename(url),sep='/')
+if (!file.exists(file)) {
+  download.file(url, file)
+  unzip(file,exdir="./data_raw/shps")
+}
 layerName <- "cfa_district" 
 cfa.dist <- readOGR(dsn="./data_raw/shps", layer=layerName) 
 
