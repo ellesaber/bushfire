@@ -151,18 +151,23 @@ dffile <- "./data_raw/weather/DF1984-2009.nc"
 rhfile <- "./data_raw/weather/RH2_3pm_1984-2009.nc"
 wsfile <- "./data_raw/weather/W1984-2009.nc"
 
-tmax <- open.ncdf(tmaxfile)
-ffdi <- open.ncdf(ffdifile)
-df <- open.ncdf(dffile)
-rh <- open.ncdf(rhfile)
-ws <- open.ncdf(wsfile)
+#tmax <- open.ncdf(tmaxfile)
+#ffdi <- open.ncdf(ffdifile)
+#df <- open.ncdf(dffile)
+#rh <- open.ncdf(rhfile)
+#ws <- open.ncdf(wsfile)
+tmax <- nc_open(tmaxfile)
+ffdi <- nc_open(ffdifile)
+df <- nc_open(dffile)
+rh <- nc_open(rhfile)
+ws <- nc_open(wsfile)
 
-temp.arr <- get.var.ncdf(tmax, "TMAX")
-tmax.time <- get.var.ncdf(tmax, "time")
-ffdi.arr <- get.var.ncdf(ffdi, "FFDI")
-df.arr <- get.var.ncdf(df, "DF")
-rh.arr <- get.var.ncdf(rh, "RH2")
-ws.arr <- get.var.ncdf(ws, "W10")
+temp.arr <- ncvar_get(tmax, "TMAX")
+tmax.time <- ncvar_get(tmax, "time")
+ffdi.arr <- ncvar_get(ffdi, "FFDI")
+df.arr <- ncvar_get(df, "DF")
+rh.arr <- ncvar_get(rh, "RH2")
+ws.arr <- ncvar_get(ws, "W10")
 
 # changing time to dates
 # Start date from Hamish 1/11/1984 
@@ -173,6 +178,7 @@ timestart <- as.numeric(firestart - wrfstart)
 timeend <- nrow(tmax.time)-1
 
 # subset to timesets only from 1/1/2000 till last value (November 2009)
+# fire data only started in 2000
 temp.arr <- temp.arr[, ,timestart:timeend] 
 ffdi.arr <- ffdi.arr[timestart:timeend, ,]
 df.arr <- df.arr[timestart:timeend, , ]

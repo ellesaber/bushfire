@@ -1,6 +1,6 @@
 
 #### Data Processing ####
-source("process_ncdf.R")
+source("script/process_ncdf.R")
   # subsets ncdf files for Victoria only and required time period
   # produces vic.dt and dt.full datatables of variables
 source("process_fire")
