@@ -38,11 +38,9 @@
 	
 	The next step is to select a smaller time period. The fire dataset and WRF model intersect between 2000 and 2009 so we subset the WRF model to this time period, reducing the size of the dataset to just over 8 million data points. 
 	
- \sec
+	\section{Fire Ignition}
 	
-	Classification trees and random forests are computationally intensive. Only using the fire season reduces the dataset to just over 3 million observations, significantly reducing computation time without compromising the project. 
-	
-	From the fire occurrence dataset this study used the date and coordinates of the fire. The coordinates were given in the Australian Map Grid (AMG66), a coordinate reference system derived from a Universal Transverse Mercator(UMT) projection of latitudes and longitudes on the Australian Geodetic Datum (AGD) \citep{featherstone96}. To merge the meteorological data set and the fire occurrence dataset I needed to convert from this UMT projection to longitude and latitude using the sp package in R \citep{sp08}. 
+	The fire ignitions data came in CSV format with a date and time, brigade and coordinates. The coordinates were given in the Australian Map Grid (AMG66), a coordinate reference system derived from a Universal Transverse Mercator(UMT) projection of latitudes and longitudes on the Australian Geodetic Datum (AGD) \citep{featherstone96} in UMT projection each coordinate has a zone, an easting and northing. To merge the meteorological data set and the fire occurrence dataset we convert from this UMT projection to longitude and latitude using the sp package in R \citep{sp08}. 
 	
 	Once the coordinates of fires were converted to the same projection I matched each fire coordinate to its nearest neighbour from the meteorological dataset. Once matched it was straightforward to merge the two datasets based on grid point and date \citep{datatable}. 
 	
@@ -60,4 +58,6 @@
 		
 		From Figure \ref{fig:occ} it is clear the majority of bushfires occur during the fire season. I reduce the size of the dataset, taking only observations in Victorian fire season (October to March) for a number of reasons. First, from a policy perspective the FFDI, fire danger rating systems, grassland curing are only calculated during the fire season so using these variables outside the time periods they are available does not make intuitive sense. From a practical perspective, this paper is looking at predicting the types bushfires that threaten lives and property which we know to occur in the summer months. 
 		
+			Classification trees and random forests are computationally intensive. Only using the fire season reduces the dataset to just over 3 million observations, significantly reducing computation time without compromising the project. 
+			
 \end{document}
