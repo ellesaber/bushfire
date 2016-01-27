@@ -2,8 +2,6 @@
 
 To do list:
 - run random forests, logistic regression, .. on the new samples separately for div and fire danger rating
-- remake the predictor density plots for div
-- transformations to symmetrise
 - plots of predictors (pairwise densities)
 - read papers using splines, RF check description/explanation 
 - Alex's comment on ratio? When ffdi in certain band look at proportion of fires. 
@@ -20,3 +18,5 @@ Extra distractions:
 
 Completed:
 - add fire danger rating to data
+- remake the predictor density plots for div: see plot_density
+- transformations to symmetrise: see plot_density

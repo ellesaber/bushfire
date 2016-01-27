@@ -1,0 +1,63 @@
+\documentclass[11pt,a4paper]{article}
+
+
+\usepackage{float,fullpage}
+\usepackage{gensymb}
+\usepackage{natbib}
+\usepackage{pdfpages}
+\usepackage{listings}
+
+\title{Creating a bushfire dataset \\ An adventure in wrangling spatial data}
+\author{Elle Saber, Rob J Hyndman \& Di Cook}
+
+
+\begin{document}
+	\maketitle
+	
+	\section{The Weather and Research Forecasting Model}
+	
+	\begin{table}
+		\centering
+		\caption{My caption}
+		\label{my-label}
+		\begin{tabular}{|l|l|l|}
+			\hline
+			Variables                                                       & Source                                                                         & Datatype \\ \hline
+			FFDI, temperature, windspeed, relative humidity, drought factor & Weather \& Research Forecasting (WRF) Model                                    & NetCDF   \\ \hline
+			Bushfire occurence                                              & Country Fire Authority (CFA) Fire \& Incident Reporting System (FIRS) Database & CSV      \\ \hline
+			Grassland Curing                                                & CFA Grassland Curing Database                                                  & Raster   \\ \hline
+			Vapour Pressure (9am) \& Precipitation                          & Bureau of Meteorology                                                          & NetCDF   \\ \hline
+		\end{tabular}
+	\end{table}
+	
+	Assembling the datasets began with the meteorological data from the WRF model. This data came in NetCDF form \citep{ncdf}. The dataset spanned all of Eastern Australian (Queensland, New South Wales \& Victoria) with daily observations over a 25 year period. This area, divided into 10km grids, contained 28675 grid points each of which had longitude, latitude and weather variable values (temperature, wind speed, relative humidity, FFDI and drought factor) associated with it. Once the time component is taken into account, the original dataset contained over 200 million data points (28675 $\times$ 365 $\times$ 25 ). 
+	
+	We begin with the temperature NCDF file (although any of them will do) and extract(?right word?) the spatial coordinates from it. The file contains 155 $\times$ 185  grid points covering most of Eastern Australia (QLD, NSW \& VIC). The spatial points are stored as both north-south/east-west coordinates or as longitude and latitudes. Using the State boundaries as given by the Australia Bureau of Statistics ESRI shape files we find the spatial intersection of the Australian States and the WRF model coordinates. 
+	
+	Given the computational burden involved with shapefiles we only use it once to create a dataframe containing the WRF model coordinates which fall in Victoria. Then after extracting the variables from the NCDF and converting to long format we use dplyr to filter out only the Victorian coordinates. 
+	
+	The next step is to select a smaller time period. The fire dataset and WRF model intersect between 2000 and 2009 so we subset the WRF model to this time period, reducing the size of the dataset to just over 8 million data points. 
+	
+ \sec
+	
+	Classification trees and random forests are computationally intensive. Only using the fire season reduces the dataset to just over 3 million observations, significantly reducing computation time without compromising the project. 
+	
+	From the fire occurrence dataset this study used the date and coordinates of the fire. The coordinates were given in the Australian Map Grid (AMG66), a coordinate reference system derived from a Universal Transverse Mercator(UMT) projection of latitudes and longitudes on the Australian Geodetic Datum (AGD) \citep{featherstone96}. To merge the meteorological data set and the fire occurrence dataset I needed to convert from this UMT projection to longitude and latitude using the sp package in R \citep{sp08}. 
+	
+	Once the coordinates of fires were converted to the same projection I matched each fire coordinate to its nearest neighbour from the meteorological dataset. Once matched it was straightforward to merge the two datasets based on grid point and date \citep{datatable}. 
+	
+	The different CFA districts and regions were added into the dataset using the raster package and another ESRI shapefile containing the district boundaries \citep{raster}. 
+	Digital boundaries for the CFA area compared to MFB or DELWP response areas were unavailable, as such an alternate method to subset geographical area was used. I made the assumption that if the CFA had not attended a bushfire between 2000 and 2014 within a 5km region of the grid point, then the grid point was unlikely to be in a CFA area. Accordingly any grids that had no fire occur in them since 2000 were excluded from the dataset. 
+	
+	The three additional variables (grassland curing, vapour pressure and precipitation) came as raster files each of higher resolutions than the original 10km grid. In all three sets we have some missing values or faulty readings due to technological fault. To minimise the impact of these for each for each grid point in the meteorological dataset I find the pixels contained in each grid point and take the median value for each time period. The functionality to combine spatial points and raster layers is provided by the raster package \citep{raster}. For any remaining missing values I make the assumption that cloud cover or faulty barometer readings are sufficiently random such that missing values will not bias results.
+	
+	%In addition to differing spatial resolutions, the grassland curing dataset has a different timescale resolution. Curing is recorded every 8 days, while the rest of the dataset is on a daily scale. As a result the grassland curing value holds 
+	
+	This final dataset is divided into a testing (30\%) and training set (70\%) randomly sampling across 'Fire' and 'No Fire' such that both datasets have the same proportion of 'Fire' (approximately 0.05). 
+	
+	
+		
+		
+		From Figure \ref{fig:occ} it is clear the majority of bushfires occur during the fire season. I reduce the size of the dataset, taking only observations in Victorian fire season (October to March) for a number of reasons. First, from a policy perspective the FFDI, fire danger rating systems, grassland curing are only calculated during the fire season so using these variables outside the time periods they are available does not make intuitive sense. From a practical perspective, this paper is looking at predicting the types bushfires that threaten lives and property which we know to occur in the summer months. 
+		
+\end{document}
