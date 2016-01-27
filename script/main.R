@@ -3,21 +3,21 @@
 source("script/process_ncdf.R")
   # subsets ncdf files for Victoria only and required time period
   # produces vic.dt and dt.full datatables of variables
-source("process_fire")
+source("script/process_fire.R")
   # reads in csv of fires 
   # converts AMG coords to lon/lat
   # matches fires to WRF coordinate
   # combines fires with WRF dataset for the fire dummy
   # subsets to only fire seasons
-source("process_curing")
+source("script/process_curing.R")
   # downloads curing files
   # extracts median value for 5km radius around each WRF gridpoint 
   # adds into weather dataset
-source("process_rain")
+source("script/process_rain.R")
   # downloads precip files
   # extracts median value for 5km radius around each WRF gridpoint 
   # adds into weather dataset 
-source("process_vapour")
+source("script/process_vapour.R")
   # downloads vapour pressure files
   # extracts median value for 5km radius around each WRF gridpoint 
   # adds into weather dataset

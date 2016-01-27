@@ -122,7 +122,7 @@ The CFA divides the state into different districts for management purposes. I us
 
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/Data/cfadis.pdf}
+  \includegraphics[width=1\columnwidth]{figures/cfadis.pdf}
   \caption{Country Fire Authority Districts}
   \label{fig:dist}
 \end{figure}
@@ -146,7 +146,7 @@ The WRF model \citep{evans10} is deemed to be an accurate representation of Aust
 %Graphs, need to redo better
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/Data/silvan.pdf}
+  	\includegraphics[width=1\columnwidth]{figures/silvan.pdf}
   \caption{Time series of meteorological variables for Silvan (-37.82, 145.42)}
   \label{fig:silv}
 \end{figure}
@@ -164,7 +164,7 @@ Combination of these variables as per equation (\ref{eq FFDI}) yields the FFDI w
 %WS, Temp and FDR contours, see if can change colours to match with the diagram
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/Data/tw_fdr.pdf}
+	\includegraphics[width=1\columnwidth]{figures/tw_fdr.pdf}
   \caption{Wind Speed and temperature coloured by fire danger rating}
   \label{fig:tw_fdr}
 \end{figure}
@@ -183,12 +183,17 @@ The curing values are derived from surface reflectance estimates which in turn a
 
 Page 10 shows how the level of grassland curing (maximum, minimum and average) changes over each fire season in our sample separated by CFA district. We can see that the districts 2, 5, 8, 16, 17, 18, 20 \&  22 generally dry out faster and have higher minimum curing values relative to districts 4, 6, 9, 10 \& 13. The evolution of grassland curing across the districts clearly demonstrates differing conditions across different parts of the state.
 
-%\includepdf[pages={1}]{figures/Data/curdist.pdf}
+
+\begin{figure}[p]
+\includegraphics[width=1\columnwidth]{figures/curdist.pdf}
+  \caption{Grassland curing evolution over time }
+  \label{fig:cur_evol}
+\end{figure}
 
 % level plot of GS curing, probably needs resizing
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/Data/cur_lp.pdf}
+	\includegraphics[width=1\columnwidth]{figures/cur_lp.pdf}
   \caption{Level Plot of Grassland Curing }
   \label{fig:cur_lp}
 \end{figure}
@@ -205,7 +210,7 @@ The vapour pressure dataset was also obtained from the Bureau of Meteorology TER
 % level plot of vapour pressure, level plot may be unnesc could just have std plot
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/Data/vap_ras.pdf}
+	\includegraphics[width=1\columnwidth]{figures/vap_ras.pdf}
   \caption{Raster plot of vapour pressure 9am }
   \label{fig:vap_ras}
 \end{figure}
@@ -247,7 +252,7 @@ Table~\ref{table:correl} shows the cross correlation matrix for the variables us
 %Map of fire ignitions in Victoria
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/data/firemap.pdf}
+	\includegraphics[width=1\columnwidth]{figures/firemap.pdf}
   \caption{Map of fire ignition 2000 - 2009}
   \label{fig:firemap}
 \end{figure}
@@ -255,7 +260,7 @@ Table~\ref{table:correl} shows the cross correlation matrix for the variables us
 %timeseries histogram with count of ignitions per fortnight
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/data/occurence.pdf}
+	\includegraphics[width=1\columnwidth]{figures/occurence.pdf}
   \caption{Number of ignitions by fortnight}
   \label{fig:occ}
 \end{figure}
@@ -273,7 +278,7 @@ Figure~\ref{fig:firemap} shows the locations of the fires in the dataset on the 
 
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/Data/tw_fire.pdf}
+	\includegraphics[width=1\columnwidth]{figures/tw_fire.pdf}
   \caption{Wind Speed and temperature coloured by fire/no fire}
   \label{fig:tw_fire}
 \end{figure}
@@ -282,7 +287,7 @@ Figure~\ref{fig:tw_fire} is constructed in the same manner as Figure~\ref{fig:tw
 
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/Data/dh_fire.pdf}
+	\includegraphics[width=1\columnwidth]{figures/dh_fire.pdf}
   \caption{Drought factor and relative humidity coloured by fire/no fire}
   \label{fig:dh_fire}
 \end{figure}
@@ -291,7 +296,7 @@ Plotting the 2D densities of the drought factor and relative humidity in Figure~
 
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/Data/gv_fire.pdf}
+	\includegraphics[width=1\columnwidth]{figures/gv_fire.pdf}
   \caption{Grassland curing and vapour pressure coloured by fire/no fire}
   \label{fig:gv_fire}
 \end{figure}
@@ -643,7 +648,7 @@ Table~\ref{table:acc2} shows the gain in balanced accuracy from including both t
 %ROC for logits
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/all_roc.pdf}
+	\includegraphics[width=1\columnwidth]{figures/all_roc.pdf}
   \caption{ROC curve for logistic models}
   \label{fig:ffdi}
 \end{figure}
@@ -661,8 +666,8 @@ As classification trees can be sensitive to the sample used, I constructed sever
 % Trees with all variables
 \begin{figure}
   \centering
-  %	\includegraphics[page=1, width=1\columnwidth]{figures/trees2.pdf}
-  %	\includegraphics[page=2, width=1\columnwidth]{figures/trees2.pdf}
+	\includegraphics[page=1, width=1\columnwidth]{figures/trees2.pdf}
+	\includegraphics[page=2, width=1\columnwidth]{figures/trees2.pdf}
   \caption{Trees with all variables}
   \label{fig:tree2}
 \end{figure}
@@ -730,7 +735,7 @@ Based on the ROC plot though the tree is superior to logit model 3 but inferior 
 
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/trees_roc.pdf}
+	\includegraphics[width=1\columnwidth]{figures/trees_roc.pdf}
   \caption{ROC curve for Tree Models}
   \label{fig:troc}
 \end{figure}
@@ -790,7 +795,7 @@ Table~\ref{table:correl} is the cross-correlation matrix for the variables and w
 
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/varimp.pdf}
+  	\includegraphics[width=1\columnwidth]{figures/varimp.pdf}
   \caption{Variable Importance for random forest}
   \label{fig:vimp}
 \end{figure}
@@ -812,7 +817,7 @@ Finally figure~\ref{fig:rocrf} shows the ROC curve for the random forest, a sing
 
 \begin{figure}
   \centering
-  %	\includegraphics[width=1\columnwidth]{figures/roc_rf.pdf}
+	\includegraphics[width=1\columnwidth]{figures/roc_rf.pdf}
   \caption{Variable Importance for random forest}
   \label{fig:rocrf}
 \end{figure}
