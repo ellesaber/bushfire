@@ -3,7 +3,7 @@
 % Change Hons to PhD, MAE, MPhil or MComm as appropraite
 % Remove singlespace and singleside for final version.
 
-\usepackage{fullpage,booktabs,amsmath}
+\usepackage{fullpage,booktabs,amsmath,paralist}
 \usepackage[section]{placeins}
 \usepackage{gensymb,microtype,todonotes}
 \usepackage{natbib}
@@ -64,12 +64,12 @@ McArthur's FFDI originated as tabulated indices and were subsequently reduced to
   F=2.0 e^{-0.450 + 0.987 \ln(D)-0.0345H+0.0338T+0.0234V},
 \end{equation}
 where
-\begin{itemize}
+\begin{compactitem}
   \item $D$ is the drought factor index;
   \item $H$ is relative humidity (as a percentage);
   \item $T$ is temperature (degrees Celsius); and
   \item $V$ is average wind velocity (in km/hr).
-\end{itemize}
+\end{compactitem}
 
 McArthur's FFDI relates weather conditions to expected fire behaviour and rate of spread. It is used in fire fighting operations by weather forecasters and fire agencies to determine fire danger \citep{clarke2013}.
 
@@ -104,7 +104,7 @@ There is extensive research on predicting fire behaviour using meteorological an
 
 \citet{dowdy10} produced an extensive report on Australian fire weather, sensitivity analyses and the relationship between the FFDI and Canadian Fire Weather Index concluding that both indices were most sensitive to temperature and windspeed. Importantly \citet{dowdy10} found in some areas of Australia (Eastern Victoria, Tasmania and south west Western Australia) significant fire activity corresponds with relatively low index values suggesting that the value of the FFDI alone may not be a good predictor of fire activity.
 
-Evaluations of other fire danger indices and weather related indices around the world have used statistical techniques as simple as correlation, and as sophisticated as logistic regression (\cite{andrews03}; \cite{harris14}).
+Evaluations of other fire danger indices and weather related indices around the world have used statistical techniques as simple as correlation, and as sophisticated as logistic regression \citep{andrews03,harris14}.
 
 %The only work comparing the FFDI to the FWI is a case study involving a pine plantation fire, the FWI was evaluated in direct comparison to the FFDI  and was found to be the better predictor of extreme fire behaviour \citep{cruz07}. This study will fill this gap in the literature by using statistical analysis to evaluate the performance of the FFDI.
 
@@ -127,7 +127,7 @@ The CFA divides the state into different districts for management purposes. I us
   \label{fig:dist}
 \end{figure}
 
-\todo[inline]{Change figure \ref{fig:dist} to have statistical divisions}
+\todo[inline]{Change Figure \ref{fig:dist} to have statistical divisions}
 
 \subsection{Explanatory Variables}
 
@@ -161,7 +161,7 @@ Windspeed does not exhibit the same seasonal patterns as the other variables.
 
 The drought factor ranges between 0 and 10 and measures the dryness of the soil using a combination of precipitation, temperature and evaporation calculations \citep{keetch68} clearly exhibits seasonal pattern.
 
-Combination of these variables as per equation (\ref{eq FFDI}) yields the FFDI which clearly exhibits seasonality. Note the spike in summer 2009, corresponding to the Black Saturday bushfires.
+Combination of these variables as per equation \eqref{eq FFDI} yields the FFDI which clearly exhibits seasonality. Note the spike in summer 2009, corresponding to the Black Saturday bushfires.
 
 %WS, Temp and FDR contours, see if can change colours to match with the diagram
 \begin{figure}
@@ -171,7 +171,7 @@ Combination of these variables as per equation (\ref{eq FFDI}) yields the FFDI w
   \label{fig:tw_fdr}
 \end{figure}
 
-The FFDI is most sensitive to temperature and windspeed (\cite{dowdy10}). Figure~\ref{fig:tw_fdr} shows two-dimensional density plots for windspeed and temperature coloured by the fire danger rating (only observations from October--March included) and divided by CFA district. The relative sizes of each contour show the small proportion of extreme and code red days and the difference in weather conditions observed in different parts of Victoria. For instance the only districts observing code red days are districts 16, 17 and 18.
+The FFDI is most sensitive to temperature and windspeed \citep{dowdy10}. Figure~\ref{fig:tw_fdr} shows two-dimensional density plots for windspeed and temperature coloured by the fire danger rating (only observations from October--March included) and divided by CFA district. The relative sizes of each contour show the small proportion of extreme and code red days and the difference in weather conditions observed in different parts of Victoria. For instance the only districts observing code red days are districts 16, 17 and 18.
 
 The plots for districts 15 and 20 are missing due to there not being enough data points in each fire dating rating level to produce the 2D densities.
 
@@ -447,9 +447,9 @@ From this matrix, we can compute accuracy, sensitivity (correctly classified fir
   \label{eq:K}
   \kappa                   & = \frac{P_0 - P_c}{1-P_c}
 \end{align}
-where $P_0$ is the total agreement probability and $P_c$ is the Agreement probability which is due to chance (see \cite{kappa} for definitions).
+where $P_0$ is the total agreement probability and $P_c$ is the Agreement probability which is due to chance \citep[see][for definitions]{kappa}.
 
-On top of the accuracy measures in equations (\ref{eq sens}), (\ref{eq spec}) and (\ref{eq BA}) the value in the bottom left of the confusion matrix (c) where we incorrectly predict `No fire' is very important in this context.
+On top of the accuracy measures in equations \eqref{eq sens}, \eqref{eq spec} and \eqref{eq BA} the value in the bottom left of the confusion matrix (c) where we incorrectly predict `No fire' is very important in this context.
 
 As a secondary measure of model quality, I use ROC plots as they remove the requirement of assuming a cut-off value.
 
@@ -524,11 +524,11 @@ With the addition of our other meteorological variables in the logistic Model 3,
   \end{center}
 \end{table}
 
-I add splines to Model 3 in stages using the confusion matrices for 10-fold cross validation to assess accuracy (using the caret package by \cite{caret}). The best performing model based on balanced accuracy and number of false negatives (incorrectly predicted `No Fires') is reported in Table~\ref{table:logf}.
+I add splines to Model 3 in stages using the confusion matrices for 10-fold cross validation to assess accuracy \citep[][using the caret package by]{caret}. The best performing model based on balanced accuracy and number of false negatives (incorrectly predicted `No Fires') is reported in Table~\ref{table:logf}.
 
 Interestingly, in Model 3 grassland curing is not statistically significant while all the other variables in the model are significant at 0.1\% level. Once the splines are added to the model, the FFDI function, wind speed, and vapour pressure are no longer significant but grassland curing is statistically significant.
 
-Figure~\ref{fig:gam_pl} shows the spline functions for each of the inputs. In logistic models the spline functions are not the marginal effects of the variables on probability of ignition but the marginal effect on the log-odds ratio. Equation~\ref{eq logits} can be rearranged to give the log-odds ratio \citep{james13},
+Figure~\ref{fig:gam_pl} shows the spline functions for each of the inputs. In logistic models the spline functions are not the marginal effects of the variables on probability of ignition but the marginal effect on the log-odds ratio. Equation~\eqref{eq logits} can be rearranged to give the log-odds ratio \citep{james13},
 \begin{equation}
   \label{eq:logodds}
   \log(\frac{p(X)}{1-p(X)}) = \sum_{k=1}^{K} f_k (x_k).
@@ -663,7 +663,7 @@ Figure~\ref{fig:ffdi} is the ROC curve for the four logistic models. The ROC cur
 
 \subsection{Classification Trees}
 
-As classification trees can be sensitive to the sample used, I constructed several trees on different balanced samples of the data. As each of the trees were structured very similarly I only report two in figure~\ref{fig:tree2}.
+As classification trees can be sensitive to the sample used, I constructed several trees on different balanced samples of the data. As each of the trees were structured very similarly I only report two in Figure~\ref{fig:tree2}.
 
 % Trees with all variables
 \begin{figure}
@@ -676,13 +676,13 @@ As classification trees can be sensitive to the sample used, I constructed sever
 
 For both the reported trees, curing is the first and second split on the tree. When the same variable is used for consecutive splits in a classification tree there are bands of values which the variable takes which are determining the outcome.
 
-Interpreting the first tree in figure~\ref{fig:tree2}, when the grassland curing level is outside the 39 to 97 range the tree predicts there will be no fire. Approximately 33\% of the training data lies in these branches.
+Interpreting the first tree in Figure~\ref{fig:tree2}, when the grassland curing level is outside the 39 to 97 range the tree predicts there will be no fire. Approximately 33\% of the training data lies in these branches.
 
 The second and third branch (from the left) contains 5\% of the training data and tells us that when curing lies between 39 and 97 and the drought factor is above 9.9 the tree predicts no fire. If the drought factor is below 9.9 but the FFDI is less than 2.6 the model also predicts no fire.
 
 The most interesting branch is the far right which contains 47\% of the training data. This branch says if curing is between 39 and 88, the drought factor is between 4.5 and 9.9, the FFDI is above 2.6 then the model predict fire. However this branch only predicts data within the branch with 64\% accuracy.
 
-The classification tree results reaffirm the results of the spline models in figure~\ref{fig:gam_pl} which suggested the effect of curing and drought factor on probability of ignition is not constant at each level of the variable. The bands of values chosen by the tree as having higher probability of ignition vaguely match the shape of the fitted spline functions in Model 4. The tree selecting ranges of variables for which probability of ignition changes suggests there is a  non-linear relationship between some of the explanatory variables and probability of ignition.
+The classification tree results reaffirm the results of the spline models in Figure~\ref{fig:gam_pl} which suggested the effect of curing and drought factor on probability of ignition is not constant at each level of the variable. The bands of values chosen by the tree as having higher probability of ignition vaguely match the shape of the fitted spline functions in Model 4. The tree selecting ranges of variables for which probability of ignition changes suggests there is a  non-linear relationship between some of the explanatory variables and probability of ignition.
 
 %*Interpret trees especially far right branch, majority of data and classfied badly.
 %Interesting the bands of curing and df, look kind of like the splines in~\ref{fig:gam_pl}
@@ -784,13 +784,13 @@ Table~\ref{table:cmrf} contains the confusion matrix for the forest predictions 
   \label{table:accrf}
 \end{table}
 
-The variable importance is calculated as mean decrease in accuracy using the out-of-bag observations, described in detail by \cite{archer08}. Figure~\ref{fig:vimp} shows the variable importance for the forest.
+The variable importance is calculated as mean decrease in accuracy using the out-of-bag observations, described in detail by \citet{archer08}. Figure~\ref{fig:vimp} shows the variable importance for the forest.
 
 Grassland curing is the most important variable in determining fire ignition which is consistent with the output from the individual trees where curing was the first and second split for the majority of the trees.
 
 FFDI, temperature, vapour pressure, relative humidity and windspeed all have close values of importance. The FFDI is second most important in determining probability of fire ignition which seems counterintuitive given it's poor performance in the classification trees and logistic regression.
 
-Similar variable importance may indicate that on the average across all trees the variables are equally important in determining probability of ignition, however variable importance cannot necessarily be taken simply at face value. \cite{strob07}  and \cite{strob08} show that variable importance measures may be biased by the measurement scale of the variables and show a preference for correlated variables. Alternative calculation of variable importance is outside the scope of this paper but the limitations of the Gini method should be taken into account.
+Similar variable importance may indicate that on the average across all trees the variables are equally important in determining probability of ignition, however variable importance cannot necessarily be taken simply at face value. \citet{strob07}  and \citet{strob08} show that variable importance measures may be biased by the measurement scale of the variables and show a preference for correlated variables. Alternative calculation of variable importance is outside the scope of this paper but the limitations of the Gini method should be taken into account.
 
 Table~\ref{table:correl} is the cross-correlation matrix for the variables and we observe that many of the variables have relatively high correlation coefficients (with the exception of vapour pressure and windspeed) which may be causing biased variable importance.
 
@@ -802,7 +802,7 @@ Table~\ref{table:correl} is the cross-correlation matrix for the variables and w
   \label{fig:vimp}
 \end{figure}
 
-Finally figure~\ref{fig:rocrf} shows the ROC curve for the random forest, a single classification tree, the linear logistic model and the splines model. Table~\ref{table:AUC} contains the area under the curves (AUC) for the ROC curves shown in~\ref{fig:rocrf} . We see the forest and splines model outperform a single tree and linear-logistic model. The closeness of the two models is interesting given random forests are generally expected to be a the best predictors at the expense of interpretability.
+Finally Figure~\ref{fig:rocrf} shows the ROC curve for the random forest, a single classification tree, the linear logistic model and the splines model. Table~\ref{table:AUC} contains the area under the curves (AUC) for the ROC curves shown in Figure~\ref{fig:rocrf} . We see the forest and splines model outperform a single tree and linear-logistic model. The closeness of the two models is interesting given random forests are generally expected to be a the best predictors at the expense of interpretability.
 
 \begin{table}
   \centering
