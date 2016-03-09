@@ -1,0 +1,17 @@
+*.aux
+*.bbl
+*.bcf
+*.blg
+*latexmk
+*.log
+*.pdfcrop
+*.toc
+*.run.xml
+*.out
+*.RData
+*.Rdata
+*.Rhistory
+*.dvi
+*.synctex*
+*.fls
+paper.pdf
