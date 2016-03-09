@@ -1,9 +1,7 @@
 % !TeX spellcheck = <none>
 \documentclass[11pt,a4paper]{article}
-% Change Hons to PhD, MAE, MPhil or MComm as appropraite
-% Remove singlespace and singleside for final version.
 
-\usepackage{fullpage,booktabs,amsmath,paralist}
+\usepackage{fullpage,booktabs,amsmath,paralist,parskip}
 \usepackage[section]{placeins}
 \usepackage{gensymb,microtype,todonotes}
 \usepackage{natbib}
@@ -35,33 +33,31 @@
 \maketitle
 
 \begin{abstract}
-  This paper investigates the effectiveness of the Forest Fire Danger Index (FFDI) \citep{mcarthur67} at predicting probability of ignition of bushfire in Victoria using logistic regression, classification trees and random forests. I construct a 10km gridded dataset of Victoria consisting of daily values for FFDI, temperature, wind speed, relative humidity, the drought factor, grassland curing level, vapour pressure at 9am and precipitation between 2000 and 2010. I find that the FFDI alone is a poor predictor of ignition. By adding the input variables to the FFDI, grassland curing, vapour pressure at 9am and precipitation I improve model accuracy and conclude that, of the variables used, grassland curing is the most important in predicting ignition. Combining non-linear regression splines with logistic models produces predictive performance comparable with random forests.
+  This paper investigates the effectiveness of the Forest Fire Danger Index (FFDI) \citep{mcarthur67} at predicting probability of ignition of bushfires in Victoria using logistic regression, classification trees and random forests. We constructed a 10km gridded dataset of Victoria consisting of daily values for FFDI, temperature, wind speed, relative humidity, the drought factor, grassland curing level, vapour pressure at 9am, and precipitation between 2000 and 2010. We find that the FFDI alone is a poor predictor of ignition. The best single variable predictor of bushfire ignition is grassland curing. We combine the various input variables using random forests and logistic additive models with splines, and obtain much better prediction accuracy than using FFDI alone.
 \end{abstract}
 
 \section{Introduction}
 
-In Australia, bushfires are one of the most common natural disasters impacting lives and property. To minimise the damage from fire occurrence, management agencies often allocate resources according to where fires are expected to occur and where fire behaviour could be more severe  \citep{padilla11, wotton05}. In order to plan effectively and manage risks resulting from bushfire, the measures used to predict fire occurrence and severity must be reliable and accurate.
+In Australia, bushfires are one of the most common natural disasters impacting lives and property. To minimise the damage from fire occurrence, management agencies often allocate resources according to where fires are expected to occur and where fire behaviour could be most severe  \citep{padilla11, wotton05}. In order to plan effectively and manage risks resulting from bushfire, the measures used to predict fire occurrence and severity must be reliable and accurate.
 
-There is limited literature on the effectiveness of the Australian fire danger rating system using statistical techniques, the majority of Australian research uses case studies. Internationally research on fire danger rating systems use standard econometric techniques such as logistic regression or Heckman sample selection models. Machine learning and non-parametric estimation are not used extensively in this area.
+There has been limited research on the effectiveness of the Australian fire danger rating system using statistical techniques; previous research has used case studies. Internationally, research on fire danger rating systems use standard statistical and econometric techniques such as logistic regression or Heckman sample selection models. Machine learning and non-parametric estimation have not been used extensively in this area, despite being well-suited to this application due to the large amount of data available and the inherent non-linearities and interactions between the predictor variables.
 
-This paper uses the Australian Forest Fire Danger index (FFDI) as a baseline model for predicting probability of ignition of bushfire then investigates strategies to improve the accuracy of the predictor. Given the science of combustion and fire behaviour it is highly unlikely that the factors affecting fire ignition impact the probability in a linear manner or without interacting with each other.
+This paper uses the Australian Forest Fire Danger index (FFDI) in a baseline model for predicting probability of ignition of bushfire, and then investigates strategies to improve the accuracy of the prediction. Given the science of combustion and fire behaviour, it is highly unlikely that the factors affecting fire ignition impact the probability in a linear manner or without interacting with each other.
 
-I construct a dataset of bushfire ignition and meteorological variables such that predicting fire ignition becomes a binary classification problem. Then I apply both some common machine learning techniques: classification trees and random forests and compare their performance to logistic regression models which use non-parametric smoothing functions. The dataset suffers from severe class imbalance, the number of fires compared to number of non fires is tiny. Accordingly, models are evaluated based on balance accuracy measures and receiver operating characteristic plots.
+We construct a dataset of bushfire ignition and meteorological variables such that predicting fire ignition becomes a binary classification problem. Then we apply some common machine learning techniques (classification trees and random forests) and compare their performance to additive logistic regression models with non-parametric smoothing functions. The dataset suffers from severe class imbalance --- the number of fires compared to number of non fires is tiny. Accordingly, models are evaluated based on balanced accuracy measures and receiver operating characteristic plots.
 
-The greatest improvement in accuracy occurs in models which allow for the input variables to behave non-linearly. By adding spline functions to the logistic model I produce a predictor which is comparable to the random forest in accuracy.
-
-While the FFDI may be a good measure of fire intensity once ignition occurs, it is a poor predictor of fire ignition. Predictor performance is improved with the inclusion of the FFDI input variables, grassland curing, vapour pressure at 9am and precipitation. Specifically of these variables, grassland curing is the most important variable in determining probability of ignition.
 
 
 \section{Background and Literature Review}
 
 \subsection{Fire Danger Rating Systems and McArthur's Forest Fire Danger Index}
-Fire danger rating systems estimate the severity of burning conditions and likelihood of fire over a large area at a particular time \citep{chandler83, andrews03}. The Forest Fire Danger Index (FFDI) \citep{mcarthur67} is the fire danger rating system used in Australia. It integrates weather elements into an index and is used as a key tool in assessing fire danger in Australia. Fire danger rating indices are accepted worldwide for anticipating general fire activity in a given area but less so for evaluating ignition probabilities.
 
-McArthur's FFDI originated as tabulated indices and were subsequently reduced to equations by \citet{noble80} which in turn simplified into the formulation of the FFDI given by
+Fire danger rating systems estimate the severity of burning conditions and likelihood of fire over a large area at a particular time \citep{chandler83, andrews03}. The Forest Fire Danger Index (FFDI) \citep{mcarthur67} is the fire danger rating system used in Australia. It integrates weather elements into an index and is used as a key tool in assessing fire danger in Australia. Fire danger rating indices are accepted worldwide for anticipating general fire activity in a given area, and are also used less commonly for evaluating ignition probabilities.
+
+McArthur's FFDI originated as tabulated indices and were subsequently reduced to equations by \citet{noble80} who in turn simplified it into the formulation of the FFDI given by
 \begin{equation}
   \label{eq FFDI}
-  F=2.0 e^{-0.450 + 0.987 \ln(D)-0.0345H+0.0338T+0.0234V},
+  F=2.0 e^{-0.450 + 0.987 \ln(D)-0.0345H+0.0338T+0.0234V}
 \end{equation}
 where
 \begin{compactitem}
@@ -75,16 +71,16 @@ McArthur's FFDI relates weather conditions to expected fire behaviour and rate o
 
 \begin{table}
   \centering
-  \begin{tabular}{ll}
+  \begin{tabular}{lr}
     \toprule
-    Fire Danger Rating & Forest Fire Danger Index \\
+    Fire Danger Rating & FFDI \\
     \midrule
-    Low-Moderate       & 0--11 \\
+    Low--Moderate      & 0--11 \\
     High               & 12--24 \\
     Very High          & 25--49\\
     Severe             & 50--74\\
     Extreme            & 75--99 \\
-    Code Red           & 100+ \\
+    Code Red           & 100\rlap{+} \\
     \bottomrule
   \end{tabular}
   \caption{The Forest Fire Danger Index and the Fire Danger Rating}
@@ -92,29 +88,27 @@ McArthur's FFDI relates weather conditions to expected fire behaviour and rate o
 \end{table}
 
 While the FFDI has been the most universally accepted fire danger rating system used in Australia for many decades, there are a number of weaknesses which may compromise its ability to accurately predict severe fire.
-
-\begin{enumerate}
+\begin{compactenum}
   \item Experimental studies conducted during its development largely focused on small scale fires in very specific types of forests and under only moderate weather conditions.
-  \item The most severe conditions represented by the FFDI were based on known worst case scenario fires, specifically the 1939 Black Friday fires.
-\end{enumerate}
+  \item The most severe conditions represented by the FFDI were based on known worst-case-scenario fires, specifically the 1939 Black Friday fires.
+\end{compactenum}
+These factors limit the applicability of the FFDI in situations where the weather conditions may be out of these envisioned ranges. This is precisely the situation that occurred on Black Saturday 2009 \citep{harris12}.
 
-These factors limit the applicability of the FFDI in situations where the weather conditions may be out of these envisioned ranges. This is precisely the situation which occurred on Black Saturday 2009 \citep{harris12}.
+There is extensive research on predicting fire behaviour using meteorological and topographical information given ignition occurrence but comparatively little on  predicting fire occurrence or on evaluating the McArthur index.
 
-There is extensive research on predicting fire behaviour using meteorological and topographical information given ignition occurrence but comparatively little also on  predicting fire occurrence and on evaluating the McArthur index.
+\citet{dowdy10} produced an extensive report on Australian fire weather, sensitivity analyses and the relationship between the FFDI and the Canadian Fire Weather Index concluding that both indices were most sensitive to temperature and windspeed. Importantly, \citet{dowdy10} found in some areas of Australia (Eastern Victoria, Tasmania and south west Western Australia) significant fire activity corresponds with relatively low index values suggesting that the value of the FFDI alone may not be a good predictor of fire activity.
 
-\citet{dowdy10} produced an extensive report on Australian fire weather, sensitivity analyses and the relationship between the FFDI and Canadian Fire Weather Index concluding that both indices were most sensitive to temperature and windspeed. Importantly \citet{dowdy10} found in some areas of Australia (Eastern Victoria, Tasmania and south west Western Australia) significant fire activity corresponds with relatively low index values suggesting that the value of the FFDI alone may not be a good predictor of fire activity.
-
-Evaluations of other fire danger indices and weather related indices around the world have used statistical techniques as simple as correlation, and as sophisticated as logistic regression \citep{andrews03,harris14}.
+Evaluations of other fire danger indices and weather-related indices around the world have used statistical techniques as simple as correlation, and as sophisticated as logistic regression \citep{andrews03,harris14}.
 
 %The only work comparing the FFDI to the FWI is a case study involving a pine plantation fire, the FWI was evaluated in direct comparison to the FFDI  and was found to be the better predictor of extreme fire behaviour \citep{cruz07}. This study will fill this gap in the literature by using statistical analysis to evaluate the performance of the FFDI.
 
 \subsection{Predicting fire activity}
 
-A study linking fire activity to certain climate variables (some of which are inputs to the FFDI, others of which are not) and the El Niño Southern Oscillation (ENSO) index found significant relationships between fire activity and vapour pressure, maximum and minimum temperature and antecedent rainfall \citep{harris14}. Notably the variables which the indices are most sensitive to are different to those found to have the strongest link with fire activity suggesting that the fire danger indices may not contain all the important information for predicting fire activity \citep{harris14}.
+A study linking fire activity to certain climate variables (some of which are inputs to the FFDI, others of which are not) and the El Niño Southern Oscillation (ENSO) index found significant relationships between fire activity and vapour pressure, maximum and minimum temperature and antecedent rainfall \citep{harris14}. Notably, the variables to which the indices are most sensitive are different to those found to have the strongest link with fire activity, suggesting that the fire danger indices may not contain all the important information for predicting fire activity \citep{harris14}.
 
-Logistic regression is common in studies predicting fire activity. The Bushfire and Natural Hazards Cooperative Research Center used logistic regression over daily historical rasters to predict probability of ignition (Read et al., 2015). Similarly, studies in Europe have used logistic regression with socio-economic factors or geographic features as dependent variables rather than fire danger ratings \citep{del11, zhang13}.
+Logistic regression is common in studies predicting fire activity. The Bushfire and Natural Hazards Cooperative Research Centre used logistic regression over daily historical rasters to predict probability of ignition \citep{Read2015-hn}. Similarly, studies in Europe have used logistic regression with socio-economic factors or geographic features as predictor variables rather than fire danger ratings \citep{del11, zhang13}.
 
-There is some literature from Europe and the U.S. on evaluating Fire Danger Rating systems, specifically the U.S. Fire Danger Rating System and the Canadian Fire Weather Index.  These investigations of fire danger rating systems and fire occurrence have  generally used logistic regression \citep{andrews03, padilla11}.
+There is some literature from Europe and the U.S. on evaluating Fire Danger Rating systems, specifically the U.S. Fire Danger Rating System and the Canadian Fire Weather Index.  These investigations of fire danger rating systems and fire occurrence have also  generally used logistic regression \citep{andrews03, padilla11}.
 
 \section{Data}
 
@@ -855,6 +849,11 @@ This paper has clearly demonstrated the benefit of combining variables different
 The interesting result is the similarity in performance of the splines model and the random forest. Using splines to allow a non-linear relationship between the log-odds ratio and the variables while random forests typically capture interactions between variables. Both these methods led to a large improvement in the predictive performance.
 
 This analysis provides a solid baseline for further study. Having shown alternate statistical techniques which capture more of the complexity and interactions in this problem and developed a model which although difficult to interpret, performs strongly in the test data.
+
+
+The greatest improvement in accuracy occurs in models which allow for the input variables to behave non-linearly. By adding spline functions to the logistic model, we produce a predictor which is comparable to the random forest in accuracy.
+
+While the FFDI may be a good measure of fire intensity once ignition occurs, it is a poor predictor of fire ignition. Predictor performance is improved with the inclusion of the FFDI input variables, grassland curing, vapour pressure at 9am and precipitation. Specifically of these variables, grassland curing is the most important variable in determining probability of ignition.
 
 % Appendices start here
 \bibliographystyle{agsm}
