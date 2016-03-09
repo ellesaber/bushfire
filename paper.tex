@@ -49,9 +49,6 @@ This paper uses the Australian Forest Fire Danger index (FFDI) in a baseline mod
 We construct a dataset of bushfire ignition and meteorological variables such that predicting fire ignition becomes a binary classification problem. Then we apply some common machine learning techniques (classification trees and random forests) and compare their performance to additive logistic regression models with non-parametric smoothing functions. The dataset suffers from severe class imbalance --- the number of fires compared to number of non fires is tiny. Accordingly, models are evaluated based on balanced accuracy measures and receiver operating characteristic plots.
 
 
-
-\section{Background and Literature Review}
-
 \subsection{Fire Danger Rating Systems and McArthur's Forest Fire Danger Index}
 
 Fire danger rating systems estimate the severity of burning conditions and likelihood of fire over a large area at a particular time \citep{chandler83, andrews03}. The Forest Fire Danger Index (FFDI) \citep{mcarthur67} is the fire danger rating system used in Australia. It integrates weather elements into an index and is used as a key tool in assessing fire danger in Australia. Fire danger rating indices are accepted worldwide for anticipating general fire activity in a given area, and are also used less commonly for evaluating ignition probabilities.
@@ -112,7 +109,10 @@ Logistic regression is common in studies predicting fire activity. The Bushfire 
 
 There is some literature from Europe and the U.S. on evaluating Fire Danger Rating systems, specifically the U.S. Fire Danger Rating System and the Canadian Fire Weather Index.  These investigations of fire danger rating systems and fire occurrence have also  generally used logistic regression \citep{andrews03, padilla11}.
 
-\section{Data}
+\section{Methods}
+
+
+\subsection{Fire Data}
 
 The CFA divides the state into different districts for management purposes. We use these districts to capture different terrain types, fuel types and population density in Victoria. Dividing the data into these districts allows us to observe any difference in the behaviour of the variables across different parts of the state. Figure~\ref{fig:dist} shows a map of the districts and their labels.
 
@@ -125,11 +125,33 @@ The CFA divides the state into different districts for management purposes. We u
 
 \todo[inline]{Change Figure \ref{fig:dist} to have statistical divisions}
 
-\subsection{Explanatory Variables}
 
-We predict probability of ignition using McArthur's Forest Fire Danger Index (FFDI), the meteorological variables used as inputs for the FFDI, grassland curing, vapour pressure at 9am and rainfall.
+%Commented out until final printing,
+%Map of fire ignitions in Victoria
+\begin{figure}
+  \centering
+  \includegraphics[width=.8\textwidth]{figures/firemap.pdf}
+  \caption{Map of fire ignition 2000 - 2009}
+  \label{fig:firemap}
+\end{figure}
 
-\subsubsection{Weather}
+%timeseries histogram with count of ignitions per fortnight
+\begin{figure}
+  \centering
+  \includegraphics[width=.8\textwidth]{figures/occurence.pdf}
+  \caption{Number of ignitions by fortnight}
+  \label{fig:occ}
+\end{figure}
+
+The fire occurrence data comes from the Fire and Incident Reporting System (FIRS). When the Country Fire Authority or other agency attends a fire or other incident a report is prepared and submitted to the FIRS database. The FIRS dataset used in this study includes all grass, grass and scrub, forest and bushfire in Victoria from the beginning of the year 2000 to 2014.
+
+Recent work by the Bushfire and Natural Hazards Cooperative Research Centre integrating bushfire and planned burn datasets in Victoria give an indication on the reliability of the data (Kilinc et al. 2015).  There is significant uncertainty of accuracy of the fire size, in particular for smaller scale fires. To limit the impact of this imperfection the data is transformed into a binary response variable where a 1 denotes a fire and a 0 denotes no fire.
+
+The data also contains some approximate coordinates for the point of origin for fires, however as discussed below the data is aggregated to a 10km grid. Consequently small errors in the fire coordinates are not deemed to cause a problem.
+
+Figure~\ref{fig:firemap} shows the locations of the fires in the dataset on the map of Victoria. The most noticeable thing in Figure~\ref{fig:firemap} is the sparsity of fires in the north-east and north west of the state and around Melbourne. This is due to the division of fire fighting organisations in Victoria. The sparse areas correspond to National Parks where Parks Victoria or the Department of Environment, Land, Water and Planning (DELWP) coordinate fire fighting activities, so many of the fires occurring in these areas are not included in this dataset.
+
+\subsection{Weather Data}
 
 The meteorological data set comes from a climate simulation of the Murray Darling Basin using the Weather Research and Forecasting (WFR) model. The WRF Modeling system has been developed by the National Center for Atmospheric Research (NCAR), the National Oceanic and Atmospheric Administrations Centers for Environmental Prediction (NCEP) and the other weather research institutions in the United States. \citet{evans10} used the Advanced Research WFR version~3 \citep{skamarock08} to simulate weather for southeastern Australia at a 10km horizontal grid over 24 years from 1985.
 
@@ -171,7 +193,27 @@ The FFDI is most sensitive to temperature and windspeed \citep{dowdy10}. Figure~
 
 The plots for districts 15 and 20 are missing due to there not being enough data points in each fire dating rating level to produce the 2D densities.
 
-\subsubsection{Grassland Curing}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figures/tw_fire.pdf}
+  \caption{Wind Speed and temperature coloured by fire/no fire}
+  \label{fig:tw_fire}
+\end{figure}
+
+Figure~\ref{fig:tw_fire} is constructed in the same manner as Figure~\ref{fig:tw_fdr} but instead of grouping by the fire danger rating, we group by Fire/No Fire. Windspeed and temperature play the largest role in determining the FFDI yet there is no discernible difference between the distributions of the two variables when there is a fire compared to no fires. This is the first indicator that the FFDI alone may not be a good predictor of probability of ignition.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figures/dh_fire.pdf}
+  \caption{Drought factor and relative humidity coloured by fire/no fire}
+  \label{fig:dh_fire}
+\end{figure}
+
+Plotting the 2D densities of the drought factor and relative humidity in Figure~\ref{fig:dh_fire}, ranges of relative humidity don't appear to vary on fire days compared to not fire days but in districts 4, 5, 6, 7, 8, 9, 10, 11, 13, 14 and 24 there is a clear difference in the densities of fire compared to no fire. Small drought factors are mostly associated with non-fire days. In districts 2, 12, 15, 16, 17, 18, 20 and 22 do not have large differences in the two densities, these districts generally have high drought factor and low relative humidity.
+
+
+\subsection{Grassland Curing Data}
 
 The level of dying or senescence of plant material caused by seasonal weather patterns is referred to as grassland curing. Grassland curing ranges between 0 and 100, where 0 means the grass is green with high moisture content and 100 means the grass is at its driest. Curing has a significant impact on fire behaviour in grasslands, particularly the probability of ignition and subsequent rate of spread \citep{cheney08}.
 
@@ -199,7 +241,16 @@ Page 10 shows how the level of grassland curing (maximum, minimum and average) c
 
 Figure~\ref{fig:cur_lp} shows a level plot produced using the rasterVis package \citep{rastervis}. We observe grassland curing values across the state for the week beginning 25th January 2009. The horizontal margin shows the mean curing value for each longitude and the vertical margin shows the mean curing for each latitude. The plot clearly shows the difference in curing values across the state, in particular the difference between the east and west of the state. This is consistent with time series graphs of curing.
 
-\subsubsection{Vapour Pressure}
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{figures/gv_fire.pdf}
+  \caption{Grassland curing and vapour pressure coloured by fire/no fire}
+  \label{fig:gv_fire}
+\end{figure}
+
+In Figure~\ref{fig:gv_fire} shows the 2D densities for grassland curing and vapour pressure for the fire and non-fire days. Once again we see a clear difference in behaviour across districts.
+
+\subsection{Vapour Pressure  Data}
 
 Vapour pressure, in meteorology, describes the partial pressure of water vapour in the atmosphere, it is directly related to the number of water vapour molecules in the air.  \citet{harris14} find there is a significant relationship between fire activity and vapour pressure among other climate variables. We investigate whether vapour pressure at 9am can improve prediction of fire occurrence.
 
@@ -216,7 +267,7 @@ The vapour pressure dataset was also obtained from the Bureau of Meteorology TER
 Figure~\ref{fig:vap_ras} shows a level plot of the vapour pressure at 9am \citep{rastervis}. The pixel values of the vapour pressure across the state on the 7th of February 2009. We see very clearly in the north-west of the state vapour pressure at 9am is much lower relative to the south-east.
 
 
-\subsubsection{Precipitation}
+\subsection{Precipitation Data}
 
 The rainfall data are gridded analyses of daily rainfall measurements from the Bureau of Meteorology's rain gauge network (TERN, AusCover) derived from daily rainfall values from weather stations across Australia.
 
@@ -244,62 +295,7 @@ The daily rainfall data represents the amount of precipitation of any type obser
 
 Table~\ref{table:correl} shows the cross correlation matrix for the variables used to predict probability of ignition. High correlation can pose a problem in regression models and to a lesser extent machine learning methods. Variables of concern are temperature, drought factor, relative humidity and FFDI and  which have relatively strong correlation coefficients.
 
-\subsection{Response Variable: Fire Occurrence}
 
-%Commented out until final printing,
-%Map of fire ignitions in Victoria
-\begin{figure}
-  \centering
-	\includegraphics[width=.8\textwidth]{figures/firemap.pdf}
-  \caption{Map of fire ignition 2000 - 2009}
-  \label{fig:firemap}
-\end{figure}
-
-%timeseries histogram with count of ignitions per fortnight
-\begin{figure}
-  \centering
-	\includegraphics[width=.8\textwidth]{figures/occurence.pdf}
-  \caption{Number of ignitions by fortnight}
-  \label{fig:occ}
-\end{figure}
-
-The fire occurrence data comes from the Fire and Incident Reporting System (FIRS). When the Country Fire Authority or other agency attends a fire or other incident a report is prepared and submitted to the FIRS database. The FIRS dataset used in this study includes all grass, grass and scrub, forest and bushfire in Victoria from the beginning of the year 2000 to 2014.
-
-Recent work by the Bushfire and Natural Hazards Cooperative Research Centre integrating bushfire and planned burn datasets in Victoria give an indication on the reliability of the data (Kilinc et al. 2015).  There is significant uncertainty of accuracy of the fire size, in particular for smaller scale fires. To limit the impact of this imperfection the data is transformed into a binary response variable where a 1 denotes a fire and a 0 denotes no fire.
-
-The data also contains some approximate coordinates for the point of origin for fires, however as discussed below the data is aggregated to a 10km grid. Consequently small errors in the fire coordinates are not deemed to cause a problem.
-
-Figure~\ref{fig:firemap} shows the locations of the fires in the dataset on the map of Victoria. The most noticeable thing in Figure~\ref{fig:firemap} is the sparsity of fires in the north-east and north west of the state and around Melbourne. This is due to the division of fire fighting organisations in Victoria. The sparse areas correspond to National Parks where Parks Victoria or the Department of Environment, Land, Water and Planning (DELWP) coordinate fire fighting activities, so many of the fires occurring in these areas are not included in this dataset.
-
-
-
-
-\begin{figure}
-  \centering
-	\includegraphics[width=\textwidth]{figures/tw_fire.pdf}
-  \caption{Wind Speed and temperature coloured by fire/no fire}
-  \label{fig:tw_fire}
-\end{figure}
-
-Figure~\ref{fig:tw_fire} is constructed in the same manner as Figure~\ref{fig:tw_fdr} but instead of grouping by the fire danger rating, we group by Fire/No Fire. Windspeed and temperature play the largest role in determining the FFDI yet there is no discernible difference between the distributions of the two variables when there is a fire compared to no fires. This is the first indicator that the FFDI alone may not be a good predictor of probability of ignition.
-
-\begin{figure}
-  \centering
-	\includegraphics[width=\textwidth]{figures/dh_fire.pdf}
-  \caption{Drought factor and relative humidity coloured by fire/no fire}
-  \label{fig:dh_fire}
-\end{figure}
-
-Plotting the 2D densities of the drought factor and relative humidity in Figure~\ref{fig:dh_fire}, ranges of relative humidity don't appear to vary on fire days compared to not fire days but in districts 4, 5, 6, 7, 8, 9, 10, 11, 13, 14 and 24 there is a clear difference in the densities of fire compared to no fire. Small drought factors are mostly associated with non-fire days. In districts 2, 12, 15, 16, 17, 18, 20 and 22 do not have large differences in the two densities, these districts generally have high drought factor and low relative humidity.
-
-\begin{figure}
-  \centering
-	\includegraphics[width=\textwidth]{figures/gv_fire.pdf}
-  \caption{Grassland curing and vapour pressure coloured by fire/no fire}
-  \label{fig:gv_fire}
-\end{figure}
-
-In Figure~\ref{fig:gv_fire} shows the 2D densities for grassland curing and vapour pressure for the fire and non-fire days. Once again we see a clear difference in behaviour across districts.
 
 \subsection{Assembling Datasets}
 
@@ -324,9 +320,7 @@ The three additional variables (grassland curing, vapour pressure and precipitat
 
 This final dataset is divided into a testing (30\%) and training set (70\%) randomly sampling across `Fire' and `No Fire' such that both datasets have the same proportion of `Fire' (approximately 0.05).
 
-\section{Method}
-
-\subsection{Logistic Regression}
+\subsection{Logistic Regression Model}
 
 Use of logistic models is the usual method for dealing with a binary response problem and it is common in studies on fire occurrence or ignition.  In this project we use logistic regression models and in addition to the linear constructions used in \citet{andrews03} and \citet{del11} we take into account the non-linear relationship believed to exist between the explanatory variables and dependent variable through the inclusion of regression splines.
 
