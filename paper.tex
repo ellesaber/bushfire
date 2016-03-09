@@ -1,7 +1,8 @@
 % !TeX spellcheck = <none>
 \documentclass[11pt,a4paper]{article}
+\usepackage[a4paper,text={17cm,25cm}]{geometry}
 
-\usepackage{fullpage,booktabs,amsmath,paralist,parskip}
+\usepackage{booktabs,amsmath,paralist,parskip,hyperref}
 \usepackage[section]{placeins}
 \usepackage{gensymb,microtype,todonotes}
 \usepackage{natbib}
@@ -24,6 +25,7 @@
 \renewcommand{\bottomfraction}{0.85}
 \renewcommand{\textfraction}{0.15}
 \renewcommand{\floatpagefraction}{0.7}
+\usepackage[section]{placeins}
 
 \title{Predicting Fire Risk: \\ An Evaluation of the Fire Danger Index}
 \author{Elle Saber, Rob J Hyndman \& Di Cook}
@@ -102,7 +104,7 @@ Evaluations of other fire danger indices and weather-related indices around the 
 
 %The only work comparing the FFDI to the FWI is a case study involving a pine plantation fire, the FWI was evaluated in direct comparison to the FFDI  and was found to be the better predictor of extreme fire behaviour \citep{cruz07}. This study will fill this gap in the literature by using statistical analysis to evaluate the performance of the FFDI.
 
-\subsection{Predicting fire activity}
+\subsection{Predicting Fire Activity}
 
 A study linking fire activity to certain climate variables (some of which are inputs to the FFDI, others of which are not) and the El Niño Southern Oscillation (ENSO) index found significant relationships between fire activity and vapour pressure, maximum and minimum temperature and antecedent rainfall \citep{harris14}. Notably, the variables to which the indices are most sensitive are different to those found to have the strongest link with fire activity, suggesting that the fire danger indices may not contain all the important information for predicting fire activity \citep{harris14}.
 
@@ -112,11 +114,11 @@ There is some literature from Europe and the U.S. on evaluating Fire Danger Rati
 
 \section{Data}
 
-The CFA divides the state into different districts for management purposes. I use these districts to capture different terrain types, fuel types and population density in Victoria. Dividing the data into these districts allows us to observe any difference in the behaviour of the variables across different parts of the state. Figure~\ref{fig:dist} shows a map of the districts and their labels.
+The CFA divides the state into different districts for management purposes. We use these districts to capture different terrain types, fuel types and population density in Victoria. Dividing the data into these districts allows us to observe any difference in the behaviour of the variables across different parts of the state. Figure~\ref{fig:dist} shows a map of the districts and their labels.
 
 \begin{figure}
   \centering
-  \includegraphics[width=1\columnwidth]{figures/cfadis.pdf}
+  \includegraphics[width=.7\textwidth]{figures/cfadis.pdf}
   \caption{Country Fire Authority Districts}
   \label{fig:dist}
 \end{figure}
@@ -125,7 +127,7 @@ The CFA divides the state into different districts for management purposes. I us
 
 \subsection{Explanatory Variables}
 
-In this thesis, I predict probability of ignition using McArthur's Forest Fire Danger Index (FFDI), the meteorological variables used as inputs for the FFDI, grassland curing, vapour pressure at 9am and rainfall.
+We predict probability of ignition using McArthur's Forest Fire Danger Index (FFDI), the meteorological variables used as inputs for the FFDI, grassland curing, vapour pressure at 9am and rainfall.
 
 \subsubsection{Weather}
 
@@ -142,7 +144,7 @@ The WRF model \citep{evans10} is deemed to be an accurate representation of Aust
 %Graphs, need to redo better
 \begin{figure}
   \centering
-  	\includegraphics[width=1\columnwidth]{figures/silvan.pdf}
+  	\includegraphics[width=\textwidth]{figures/silvan.pdf}
   \caption{Time series of meteorological variables for Silvan (-37.82, 145.42)}
   \label{fig:silv}
 \end{figure}
@@ -160,7 +162,7 @@ Combination of these variables as per equation \eqref{eq FFDI} yields the FFDI w
 %WS, Temp and FDR contours, see if can change colours to match with the diagram
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/tw_fdr.pdf}
+	\includegraphics[width=\textwidth]{figures/tw_fdr.pdf}
   \caption{Wind Speed and temperature coloured by fire danger rating}
   \label{fig:tw_fdr}
 \end{figure}
@@ -173,15 +175,15 @@ The plots for districts 15 and 20 are missing due to there not being enough data
 
 The level of dying or senescence of plant material caused by seasonal weather patterns is referred to as grassland curing. Grassland curing ranges between 0 and 100, where 0 means the grass is green with high moisture content and 100 means the grass is at its driest. Curing has a significant impact on fire behaviour in grasslands, particularly the probability of ignition and subsequent rate of spread \citep{cheney08}.
 
-The grassland curing data were obtained through the Bureau of Meteorology TERN server and AusCover (http://www.auscover.org.au). AusCover is the remote sensing data products facility of the Terrestrial Ecosystem Research network (TERN, http://www.tern.org.au). There are several different satellite models available to provide curing values for image pixels across the state of Victoria. I use `MapVictoria' \citep{martin15} as this is the current algorithm used by the CFA and is shown to outperform the other curing models.
+The grassland curing data were obtained through the Bureau of Meteorology TERN server and AusCover (http://www.auscover.org.au). AusCover is the remote sensing data products facility of the Terrestrial Ecosystem Research network (TERN, http://www.tern.org.au). There are several different satellite models available to provide curing values for image pixels across the state of Victoria. We use `MapVictoria' \citep{martin15} as this is the current algorithm used by the CFA and is shown to outperform the other curing models.
 
 The curing values are derived from surface reflectance estimates which in turn are derived from cloud-free satellite observations in an 8-day window on a 500-m grid. The dataset spans from the beginning of 2000 to the end of 2010. Missing values may occur in the event of extended cloud cover during the observation window.
 
 Page 10 shows how the level of grassland curing (maximum, minimum and average) changes over each fire season in our sample separated by CFA district. We can see that the districts 2, 5, 8, 16, 17, 18, 20 \&  22 generally dry out faster and have higher minimum curing values relative to districts 4, 6, 9, 10 \& 13. The evolution of grassland curing across the districts clearly demonstrates differing conditions across different parts of the state.
 
 
-\begin{figure}[p]
-\includegraphics[width=1\columnwidth]{figures/curdist.pdf}
+\begin{figure}[p]\centering
+\includegraphics[width=.95\textwidth]{figures/curdist.pdf}
   \caption{Grassland curing evolution over time }
   \label{fig:cur_evol}
 \end{figure}
@@ -189,7 +191,7 @@ Page 10 shows how the level of grassland curing (maximum, minimum and average) c
 % level plot of GS curing, probably needs resizing
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/cur_lp.pdf}
+	\includegraphics[width=.8\textwidth]{figures/cur_lp.pdf}
   \caption{Level Plot of Grassland Curing }
   \label{fig:cur_lp}
 \end{figure}
@@ -199,14 +201,14 @@ Figure~\ref{fig:cur_lp} shows a level plot produced using the rasterVis package 
 
 \subsubsection{Vapour Pressure}
 
-Vapour pressure, in meteorology, describes the partial pressure of water vapour in the atmosphere, it is directly related to the number of water vapour molecules in the air.  \citet{harris14} find there is a significant relationship between fire activity and vapour pressure among other climate variables. I investigate whether vapour pressure at 9am can improve prediction of fire occurrence.
+Vapour pressure, in meteorology, describes the partial pressure of water vapour in the atmosphere, it is directly related to the number of water vapour molecules in the air.  \citet{harris14} find there is a significant relationship between fire activity and vapour pressure among other climate variables. We investigate whether vapour pressure at 9am can improve prediction of fire occurrence.
 
 The vapour pressure dataset was also obtained from the Bureau of Meteorology TERN server and AusCover. The vapour pressure dataset is gridded analyses of daily air water vapour pressure from the Bureau of Meteorology's thermometer network across Australia \citep{jones09}, calculated on a 5km grid.
 
 % level plot of vapour pressure, level plot may be unnesc could just have std plot
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/vap_ras.pdf}
+	\includegraphics[width=.8\textwidth]{figures/vap_ras.pdf}
   \caption{Raster plot of vapour pressure 9am }
   \label{fig:vap_ras}
 \end{figure}
@@ -248,7 +250,7 @@ Table~\ref{table:correl} shows the cross correlation matrix for the variables us
 %Map of fire ignitions in Victoria
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/firemap.pdf}
+	\includegraphics[width=.8\textwidth]{figures/firemap.pdf}
   \caption{Map of fire ignition 2000 - 2009}
   \label{fig:firemap}
 \end{figure}
@@ -256,7 +258,7 @@ Table~\ref{table:correl} shows the cross correlation matrix for the variables us
 %timeseries histogram with count of ignitions per fortnight
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/occurence.pdf}
+	\includegraphics[width=.8\textwidth]{figures/occurence.pdf}
   \caption{Number of ignitions by fortnight}
   \label{fig:occ}
 \end{figure}
@@ -274,16 +276,16 @@ Figure~\ref{fig:firemap} shows the locations of the fires in the dataset on the 
 
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/tw_fire.pdf}
+	\includegraphics[width=\textwidth]{figures/tw_fire.pdf}
   \caption{Wind Speed and temperature coloured by fire/no fire}
   \label{fig:tw_fire}
 \end{figure}
 
-Figure~\ref{fig:tw_fire} is constructed in the same manner as Figure~\ref{fig:tw_fdr} but instead of grouping by the fire danger rating, I group by Fire/No Fire. Windspeed and temperature play the largest role in determining the FFDI yet there is no discernible difference between the distributions of the two variables when there is a fire compared to no fires. This is the first indicator that the FFDI alone may not be a good predictor of probability of ignition.
+Figure~\ref{fig:tw_fire} is constructed in the same manner as Figure~\ref{fig:tw_fdr} but instead of grouping by the fire danger rating, we group by Fire/No Fire. Windspeed and temperature play the largest role in determining the FFDI yet there is no discernible difference between the distributions of the two variables when there is a fire compared to no fires. This is the first indicator that the FFDI alone may not be a good predictor of probability of ignition.
 
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/dh_fire.pdf}
+	\includegraphics[width=\textwidth]{figures/dh_fire.pdf}
   \caption{Drought factor and relative humidity coloured by fire/no fire}
   \label{fig:dh_fire}
 \end{figure}
@@ -292,31 +294,31 @@ Plotting the 2D densities of the drought factor and relative humidity in Figure~
 
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/gv_fire.pdf}
+	\includegraphics[width=\textwidth]{figures/gv_fire.pdf}
   \caption{Grassland curing and vapour pressure coloured by fire/no fire}
   \label{fig:gv_fire}
 \end{figure}
 
 In Figure~\ref{fig:gv_fire} shows the 2D densities for grassland curing and vapour pressure for the fire and non-fire days. Once again we see a clear difference in behaviour across districts.
 
-\subsection{Assembling datasets}
+\subsection{Assembling Datasets}
 
 Assembling the datasets began with the meteorological data from the WRF model. This data came in NetCDF form \citep{ncdf}. The dataset spanned all of Eastern Australian (Queensland, New South Wales \& Victoria) with daily observations over a 25 year period. This area, divided into 10km grids, contained 28675 grid points each of which had longitude, latitude and weather variable values (temperature, wind speed, relative humidity, FFDI and drought factor) associated with it. Once the time component is taken into account, the original dataset contained over 200 million data points (28675 $\times$ 365 $\times$ 25 ).
 
-The first step was to reduce the dataset to a more manageable size. I converted the NCDF file to a data table using the raster and data.table packages in R \citep{raster, datatable}. I used ESRI shapefiles of Australian Geographical Classification boundaries \citep{ABS1259} to sort the grid points into states and selected only grid points in Victoria. The datasets intersect between 2000 and 2009, subsetting the WFR data reduces the size of the dataset to just over 8 million data points.
+The first step was to reduce the dataset to a more manageable size. We converted the NCDF file to a data table using the raster and data.table packages in R \citep{raster, datatable}. We used ESRI shapefiles of Australian Geographical Classification boundaries \citep{ABS1259} to sort the grid points into states and selected only grid points in Victoria. The datasets intersect between 2000 and 2009, subsetting the WFR data reduces the size of the dataset to just over 8 million data points.
 
-From Figure~\ref{fig:occ} it is clear the majority of bushfires occur during the fire season. I reduce the size of the dataset, taking only observations in Victorian fire season (October to March) for a number of reasons. First, from a policy perspective the FFDI, fire danger rating systems, grassland curing are only calculated during the fire season so using these variables outside the time periods they are available does not make intuitive sense. From a practical perspective, this paper is looking at predicting the types bushfires that threaten lives and property which we know to occur in the summer months.
+From Figure~\ref{fig:occ} it is clear the majority of bushfires occur during the fire season. We reduce the size of the dataset, taking only observations in Victorian fire season (October to March) for a number of reasons. First, from a policy perspective the FFDI, fire danger rating systems, grassland curing are only calculated during the fire season so using these variables outside the time periods they are available does not make intuitive sense. From a practical perspective, this paper is looking at predicting the types bushfires that threaten lives and property which we know to occur in the summer months.
 
 Classification trees and random forests are computationally intensive. Only using the fire season reduces the dataset to just over 3 million observations, significantly reducing computation time without compromising the project.
 
-From the fire occurrence dataset this study used the date and coordinates of the fire. The coordinates were given in the Australian Map Grid (AMG66), a coordinate reference system derived from a Universal Transverse Mercator(UMT) projection of latitudes and longitudes on the Australian Geodetic Datum (AGD) \citep{featherstone96}. To merge the meteorological data set and the fire occurrence dataset I needed to convert from this UMT projection to longitude and latitude using the sp package in R \citep{sp08}.
+From the fire occurrence dataset this study used the date and coordinates of the fire. The coordinates were given in the Australian Map Grid (AMG66), a coordinate reference system derived from a Universal Transverse Mercator(UMT) projection of latitudes and longitudes on the Australian Geodetic Datum (AGD) \citep{featherstone96}. To merge the meteorological data set and the fire occurrence dataset we needed to convert from this UMT projection to longitude and latitude using the sp package in R \citep{sp08}.
 
-Once the coordinates of fires were converted to the same projection I matched each fire coordinate to its nearest neighbour from the meteorological dataset. Once matched it was straightforward to merge the two datasets based on grid point and date \citep{datatable}.
+Once the coordinates of fires were converted to the same projection we matched each fire coordinate to its nearest neighbour from the meteorological dataset. Once matched it was straightforward to merge the two datasets based on grid point and date \citep{datatable}.
 
 The different CFA districts and regions were added into the dataset using the raster package and another ESRI shapefile containing the district boundaries \citep{raster}.
-Digital boundaries for the CFA area compared to MFB or DELWP response areas were unavailable, as such an alternate method to subset geographical area was used. I made the assumption that if the CFA had not attended a bushfire between 2000 and 2014 within a 5km region of the grid point, then the grid point was unlikely to be in a CFA area. Accordingly any grids that had no fire occur in them since 2000 were excluded from the dataset.
+Digital boundaries for the CFA area compared to MFB or DELWP response areas were unavailable, as such an alternate method to subset geographical area was used. We made the assumption that if the CFA had not attended a bushfire between 2000 and 2014 within a 5km region of the grid point, then the grid point was unlikely to be in a CFA area. Accordingly any grids that had no fire occur in them since 2000 were excluded from the dataset.
 
-The three additional variables (grassland curing, vapour pressure and precipitation) came as raster files each of higher resolutions than the original 10km grid. In all three sets we have some missing values or faulty readings due to technological fault. To minimise the impact of these for each for each grid point in the meteorological dataset I find the pixels contained in each grid point and take the median value for each time period. The functionality to combine spatial points and raster layers is provided by the raster package \citep{raster}. For any remaining missing values I make the assumption that cloud cover or faulty barometer readings are sufficiently random such that missing values will not bias results.
+The three additional variables (grassland curing, vapour pressure and precipitation) came as raster files each of higher resolutions than the original 10km grid. In all three sets we have some missing values or faulty readings due to technological fault. To minimise the impact of these for each for each grid point in the meteorological dataset we find the pixels contained in each grid point and take the median value for each time period. The functionality to combine spatial points and raster layers is provided by the raster package \citep{raster}. For any remaining missing values we make the assumption that cloud cover or faulty barometer readings are sufficiently random such that missing values will not bias results.
 
 %In addition to differing spatial resolutions, the grassland curing dataset has a different timescale resolution. Curing is recorded every 8 days, while the rest of the dataset is on a daily scale. As a result the grassland curing value holds
 
@@ -324,9 +326,9 @@ This final dataset is divided into a testing (30\%) and training set (70\%) rand
 
 \section{Method}
 
-\subsection{Logistic regression}
+\subsection{Logistic Regression}
 
-Use of logistic models is the usual method for dealing with a binary response problem and it is common in studies on fire occurrence or ignition.  In this project I use logistic regression models and in addition to the linear constructions used in \citet{andrews03} and \citet{del11} I take into account the non-linear relationship believed to exist between the explanatory variables and dependent variable through the inclusion of regression splines.
+Use of logistic models is the usual method for dealing with a binary response problem and it is common in studies on fire occurrence or ignition.  In this project we use logistic regression models and in addition to the linear constructions used in \citet{andrews03} and \citet{del11} we take into account the non-linear relationship believed to exist between the explanatory variables and dependent variable through the inclusion of regression splines.
 
 Regression splines are a method for modelling nonlinear data as a number of piecewise  polynomial functions. The points at which the functions join are called knots. For example when the functions join at $x=k$, $k$ is known as a knot \citep{ruppert03}.
 
@@ -339,7 +341,7 @@ where $Y$ denotes fire occurrence, $x_k$ denotes the $k$th predictor and each $f
 
 Regression splines can be subject to over fitting: where the fitted model adheres to the data too strongly and doesn't smooth out `noise' enough. This results in great in-sample predictions but poor out-of-sample predictions. To prevent over fitting occurring we use an automated method that optimizes the number of knots by penalizing for non-smoothness; an overview of using penalized regression splines in this context is given by \citet{wood02}.
 
-\subsection{Classification trees}
+\subsection{Classification Trees}
 
 Classification tree analysis involves segmenting the predictor space into different regions in order to find the best predictor for the response variable.
 
@@ -361,19 +363,18 @@ This decision tree is expected to perform well relative to the logistic model as
 
 Two common problems associated with decision trees are the problem of overly complex trees (or over fitting) and secondly that in the quest to reduce the Gini index it is possible to subdivide the data so far that there are very few observations at each node.
 
-To approach over fitting, one of two different approaches can be taken: either a rule can be applied that prevents the tree growing too large (for example by setting a threshold on the minimum amount of information gain required to produce a split), or the tree can be allowed to grow large and pruning can be applied afterwards to produce a subtree. In this paper I use 10-fold cross validation on the training data to choose the precision parameter for the classification tree.
+To approach over fitting, one of two different approaches can be taken: either a rule can be applied that prevents the tree growing too large (for example by setting a threshold on the minimum amount of information gain required to produce a split), or the tree can be allowed to grow large and pruning can be applied afterwards to produce a subtree. In this paper we use 10-fold cross validation on the training data to choose the precision parameter for the classification tree.
 
-Decision trees tend to be very sensitive to the sample used to grow them. Taking this into account I build a number of trees using different balanced samples of the data and compare the output. An alternative solution is random forests (discussed below) as they have the additional advantage of reducing the problem of high variance which plagues decision trees \citep{james13}.
+Decision trees tend to be very sensitive to the sample used to grow them. Taking this into account we build a number of trees using different balanced samples of the data and compare the output. An alternative solution is random forests (discussed below) as they have the additional advantage of reducing the problem of high variance which plagues decision trees \citep{james13}.
 
 In interpreting classification trees, proximity to the base of the tree indicates how important the variable is in predicting fire occurrence. Variables at the base of the tree are the most important. A tree which does not have the FFDI close to the base of the tree this will suggest the FFDI is not the most important predictor for fire occurrence. Using those variables close to the base of the tree in a fire danger rating system should improve its predictive ability.
 
 
 
-\subsection{Random forests}
+\subsection{Random Forests}
 
 A random forest is a technique that uses classification trees as a key building block and helps address the limitations of classification trees and improve predictive performance. They involve multiple trees and random samples of our predictors \citep{berk08}.
 The general algorithm is as follows for our dataset of N observations and P predictor variables \citep{berk08, varian14}:
-
 \begin{enumerate}
   \item Take a bootstrap sample (random sample of size N with replacement) from the data.
   \item Take a random sample of size $M < P$ (typically $M \approx \sqrt{P}$, \cite{james13}, without replacement) from the predictors.
@@ -392,10 +393,10 @@ The repeated splitting based on parameters by the random forest allows the fores
 
 Some of the weaknesses of Random Forests is that they can be a black box?in that it is difficult to understand where the output is coming from and they do not offer simple summaries of the relationship between variables in the way decision trees do \citep{varian14}. The advantages of decreased variance and improved accuracy of predictions which random forests bring come at the cost of interpretability, random forests cannot be represented in a clear diagram and it is no longer immediately obvious which variables are the most influential in the procedure \citep{james13}.
 
-I expect the random forest model to give improved out-of-sample fit particularly with highly non-linear data and despite being difficult to interpret, the random forests can offer insight regarding which predictors contribute the biggest improvements to prediction accuracy \citep{varian14}.
+We expect the random forest model to give improved out-of-sample fit particularly with highly non-linear data and despite being difficult to interpret, the random forests can offer insight regarding which predictors contribute the biggest improvements to prediction accuracy \citep{varian14}.
 
 
-\subsection{Classification with unbalanced classes}
+\subsection{Classification with Unbalanced Classes}
 
 Classical machine learning algorithms assume that the response variable has an equal number of observations within each class. Classes are considered imbalanced if the proportion of observations in one class is not equal to the proportion of observations in the other \citep{japkowicz00}. In practice it is very common to have some degree of imbalance and this does not have much effect on the outcome unless the imbalance reaches some threshold.
 
@@ -405,11 +406,11 @@ Restricting the dataset to the Victorian fire season (October to March) marginal
 
 There are several ways to address the class imbalance problem in machine learning: over sampling, under-sampling, using different splitting criteria \citep{japkowicz00}.
 
-I address the class imbalance problem in two ways, first in building the model I create balanced samples by under sampling the `no fire' class in a similar manner to \citep{padilla11}.  The second approach is to assess each model's performance in predicting the test data using `balanced accuracy' rather than overall accuracy \citep{mosley13, japkowicz00}.
+We address the class imbalance problem in two ways, first in building the model we create balanced samples by under sampling the `no fire' class in a similar manner to \citep{padilla11}.  The second approach is to assess each model's performance in predicting the test data using `balanced accuracy' rather than overall accuracy \citep{mosley13, japkowicz00}.
 
-Under-sampling the no fire class addresses the problem of imbalanced classes but I also use it to reduce the serial and spatial correlation that is present in the dataset by using a `near-maximin' sampling method thereby ensuring all the data points in the sample are separate from each from each other in space and time to reduce the impact of correlation.
+Under-sampling the no fire class addresses the problem of imbalanced classes but we also use it to reduce the serial and spatial correlation that is present in the dataset by using a `near-maximin' sampling method thereby ensuring all the data points in the sample are separate from each from each other in space and time to reduce the impact of correlation.
 
-For consistency all three of the classification techniques are estimated on the balanced training set and evaluated by  on the test data. I evaluate based on receiver operating characteristic (ROC) plots  and using $2\times2$ confusion matrices.
+For consistency all three of the classification techniques are estimated on the balanced training set and evaluated by  on the test data. We evaluate based on receiver operating characteristic (ROC) plots  and using $2\times2$ confusion matrices.
 
 %eg confusion matrix with ABCD
 \begin{table}
@@ -445,9 +446,9 @@ where $P_0$ is the total agreement probability and $P_c$ is the Agreement probab
 
 On top of the accuracy measures in equations \eqref{eq sens}, \eqref{eq spec} and \eqref{eq BA} the value in the bottom left of the confusion matrix (c) where we incorrectly predict `No fire' is very important in this context.
 
-As a secondary measure of model quality, I use ROC plots as they remove the requirement of assuming a cut-off value.
+As a secondary measure of model quality, we use ROC plots as they remove the requirement of assuming a cut-off value.
 
-An ROC plot shows the change in true positive rate (sensitivity) and false positive rate (1- specificity) for different probability thresholds. For each model I plot the ROC and calculate the area under the curve (AUC) as a measure of the model performance. The AUC measures a classification model's performance, ranging from 0.5 (random) to 1 (perfect accuracy).
+An ROC plot shows the change in true positive rate (sensitivity) and false positive rate (1- specificity) for different probability thresholds. For each model we plot the ROC and calculate the area under the curve (AUC) as a measure of the model performance. The AUC measures a classification model's performance, ranging from 0.5 (random) to 1 (perfect accuracy).
 
 %Also available is a test of significance on the out-of-sample predictions known as McNemar's test \citep{dietterich98}.
 
@@ -456,7 +457,7 @@ An ROC plot shows the change in true positive rate (sensitivity) and false posit
 
 \subsection{Logistic Regression}
 
-The baseline model is given by a simple logistic regression of fire on FFDI, I then add the inputs to the FFDI and  the other variables (curing, vapour pressure and rainfall).
+The baseline model is given by a simple logistic regression of fire on FFDI, we then add the inputs to the FFDI and  the other variables (curing, vapour pressure and rainfall).
 
 Logistic regression output for the first three models is given in Table~\ref{table:coefficients}.
 
@@ -474,7 +475,7 @@ Individual t-statistics indicate even when FFDI is taken into account it's input
 
 A likelihood ratio test rejects the null that temperature, relative humidity, windspeed and drought factor are jointly insignificant providing further evidence that the FFDI is not using the meteorological information efficiently and there are relationships between fire occurrence and these variables that the FFDI is not capturing.
 
-%Do I need to show output for this?
+%Do we need to show output for this?
 
 With the addition of our other meteorological variables in the logistic Model 3, the P-values once again suggest that rain and vapour pressure at 9am are statistically significant but grassland curing is not statistically significant at the 5\% level. The statistical significance of rainfall and vapour pressure suggest more could be added to the index to produce a better prediction of fire occurrence.
 
@@ -518,7 +519,7 @@ With the addition of our other meteorological variables in the logistic Model 3,
   \end{center}
 \end{table}
 
-I add splines to Model 3 in stages using the confusion matrices for 10-fold cross validation to assess accuracy \citep[][using the caret package by]{caret}. The best performing model based on balanced accuracy and number of false negatives (incorrectly predicted `No Fires') is reported in Table~\ref{table:logf}.
+We add splines to Model 3 in stages using the confusion matrices for 10-fold cross validation to assess accuracy \citep[][using the caret package by]{caret}. The best performing model based on balanced accuracy and number of false negatives (incorrectly predicted `No Fires') is reported in Table~\ref{table:logf}.
 
 Interestingly, in Model 3 grassland curing is not statistically significant while all the other variables in the model are significant at 0.1\% level. Once the splines are added to the model, the FFDI function, wind speed, and vapour pressure are no longer significant but grassland curing is statistically significant.
 
@@ -644,7 +645,7 @@ Table~\ref{table:acc2} shows the gain in balanced accuracy from including both t
 %ROC for logits
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/all_roc.pdf}
+	\includegraphics[width=.8\textwidth]{figures/all_roc.pdf}
   \caption{ROC curve for logistic models}
   \label{fig:ffdi}
 \end{figure}
@@ -657,13 +658,13 @@ Figure~\ref{fig:ffdi} is the ROC curve for the four logistic models. The ROC cur
 
 \subsection{Classification Trees}
 
-As classification trees can be sensitive to the sample used, I constructed several trees on different balanced samples of the data. As each of the trees were structured very similarly I only report two in Figure~\ref{fig:tree2}.
+As classification trees can be sensitive to the sample used, we constructed several trees on different balanced samples of the data. As each of the trees were structured very similarly we only report two in Figure~\ref{fig:tree2}.
 
 % Trees with all variables
 \begin{figure}
   \centering
-	\includegraphics[page=1, width=1\columnwidth]{figures/trees2.pdf}
-	\includegraphics[page=2, width=1\columnwidth]{figures/trees2.pdf}
+	\includegraphics[page=1, width=\textwidth]{figures/trees2.pdf}\par\vspace*{1.5cm}\par
+	\includegraphics[page=2, width=\textwidth]{figures/trees2.pdf}
   \caption{Trees with all variables}
   \label{fig:tree2}
 \end{figure}
@@ -731,15 +732,15 @@ Based on the ROC plot though the tree is superior to logit model 3 but inferior 
 
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/trees_roc.pdf}
+	\includegraphics[width=.8\textwidth]{figures/trees_roc.pdf}
   \caption{ROC curve for Tree Models}
   \label{fig:troc}
 \end{figure}
 
 
-\subsection{Random forest}
+\subsection{Random Forest}
 
-I produce the random forest using the caret and randomForest packages \citep{caret, rf} in R. The random forest is built using the balanced training set and then assessed on its prediction on the test set.
+We produce the random forest using the caret and randomForest packages \citep{caret, rf} in R. The random forest is built using the balanced training set and then assessed on its prediction on the test set.
 
 Table~\ref{table:cmrf} contains the confusion matrix for the forest predictions using a cutoff value of 0.5. Comparing these values to those in Table~\ref{table:cm2} for model 4 the forest and splines model predict have the same level of accuracy in predicting actual fires. The forest performs slightly better than the splines model at predicting no fires. Accordingly, we observe slightly higher balanced accuracy and kappa.
 
@@ -791,7 +792,7 @@ Table~\ref{table:correl} is the cross-correlation matrix for the variables and w
 
 \begin{figure}
   \centering
-  	\includegraphics[width=1\columnwidth]{figures/varimp.pdf}
+  	\includegraphics[width=.7\textwidth]{figures/varimp.pdf}
   \caption{Variable Importance for random forest}
   \label{fig:vimp}
 \end{figure}
@@ -813,14 +814,14 @@ Finally Figure~\ref{fig:rocrf} shows the ROC curve for the random forest, a sing
 
 \begin{figure}
   \centering
-	\includegraphics[width=1\columnwidth]{figures/roc_rf.pdf}
+	\includegraphics[width=.8\textwidth]{figures/roc_rf.pdf}
   \caption{Variable Importance for random forest}
   \label{fig:rocrf}
 \end{figure}
 
 \subsection{Extensions}
 
-This thesis takes a very simplistic view of the dataset, rather than utilising the spatial and time series component, I treat each spatial and time point as independent. Utilising the lagged variables will no doubt improve the model for example we'd expect after a week of hot windy days the probability of ignition would be higher compared to a week of cold days or rain.
+This thesis takes a very simplistic view of the dataset, rather than utilising the spatial and time series component, we treat each spatial and time point as independent. Utilising the lagged variables will no doubt improve the model for example we'd expect after a week of hot windy days the probability of ignition would be higher compared to a week of cold days or rain.
 
 From the Figure~\ref{fig:firemap} and the plots of the explanatory variables clearly show a difference in fire behaviour across districts. There is potential for improved accuracy by training different models for the different districts to capture the different conditions in each area.
 
@@ -836,7 +837,7 @@ This thesis set out to achieve three things:
   \item Compare the performance of nonparametric estimation and machine learning techniques to traditional logistic regression.
 \end{enumerate}
 
-From the different models in this paper, I conclude that the FFDI alone of a poor predictor of bushfire ignition.
+From the different models in this paper, we conclude that the FFDI alone of a poor predictor of bushfire ignition.
 
 In the logistic models the first, based only on the FFDI, had very low accuracy when  in predicting the test set and the ROC plot. The FFDI was still statistically significant when the other variables were added but the joint significance of it's inputs even after FFDI was included in the model suggests that the FFDI is not capturing all the information contained in it's inputs. Once n the splines were included the FFDI was no longer statistically significant.
 
