@@ -148,7 +148,6 @@ p
 
 # Figure 9
 #plot ws, temp, and fire
-library()
 d$fire <- factor(d$fire)
 f <- ggplot(d, aes(ws, temp, color=fire)) + geom_density2d(alpha=.5) +   
   theme(aspect.ratio=1) + facet_wrap(~div, ncol=5) + theme_bw() + 
@@ -157,6 +156,18 @@ f <- ggplot(d, aes(ws, temp, color=fire)) + geom_density2d(alpha=.5) +
 
 #savepdf("./figures/tw_fire")
 f
+
+library("hextri")
+ds <- d %>% filter(div=="Gippsland")
+ds <- d %>% filter(div=="Wimmera")
+rval <- hextri(ds$ws, ds$temp, ds$fire, colours=c("#1B9E77","#D95F02"), 
+               nbins=20, border=TRUE, style="alpha")
+
+ggplot(d[d$fire==1,], aes(ws, temp)) + geom_hex() +   
+  theme(aspect.ratio=1) + facet_wrap(~div, ncol=5) + theme_bw() + 
+  xlab("wind speed") + ylab("temperature") +
+  scale_color_brewer(palette = "Dark2")
+
 #dev.off()
 
 # Fig 11
