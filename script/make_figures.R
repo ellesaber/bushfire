@@ -32,9 +32,9 @@ myMap <- get_googlemap(center=c(lon=144.5,lat=-37.5), zoom=6, maptype = "roadmap
 vicmap <- ggmap(myMap,
                 extent = "device")
 #add in fires!
-firemap <- vicmap + geom_point(aes(x=long, y=lat), data=fire.dt, alpha=.1, color="red3")
+firemap <- vicmap + geom_point(aes(x=long, y=lat), data=fire.dt, alpha=.1, color="red3") 
 #savepdf("./figures/firemap")
-firemap
+firemap 
 #dev.off()
 
 # Fig 8

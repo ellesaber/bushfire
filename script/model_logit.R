@@ -1,6 +1,8 @@
 library(caret)
 library(splines)
 library(data.table)
+library(e1071)
+library(dplyr)
 
 load("./robject/train.rda")
 load("./robject/sub.rda")
@@ -26,6 +28,7 @@ logit2 <- train(fire ~ temp + ffdi + df + rh + ws,
                 method    = "glm"    ,
                 family    = binomial ,
                 trControl = tc)
+
 logit3 <- train(fire ~ temp + ffdi + df + rh + ws + curing + vapour + rain,
                 data      = newsub    ,
                 method    = "glm"    ,

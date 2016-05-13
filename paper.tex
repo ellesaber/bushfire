@@ -111,8 +111,12 @@ There is some literature from Europe and the U.S. on evaluating Fire Danger Rati
 
 \section{Methods}
 
+Data was compiled from multiple sources to study the fire incidence, and two types of models were used to prdeict incidence on the basis of these variables.
 
-\subsection{Fire Data}
+
+\subsection{Data}
+
+\subsubsection{Fire}
 
 The CFA divides the state into different districts for management purposes. We use these districts to capture different terrain types, fuel types and population density in Victoria. Dividing the data into these districts allows us to observe any difference in the behaviour of the variables across different parts of the state. Figure~\ref{fig:dist} shows a map of the districts and their labels.
 
@@ -151,7 +155,7 @@ The data also contains some approximate coordinates for the point of origin for 
 
 Figure~\ref{fig:firemap} shows the locations of the fires in the dataset on the map of Victoria. The most noticeable thing in Figure~\ref{fig:firemap} is the sparsity of fires in the north-east and north west of the state and around Melbourne. This is due to the division of fire fighting organisations in Victoria. The sparse areas correspond to National Parks where Parks Victoria or the Department of Environment, Land, Water and Planning (DELWP) coordinate fire fighting activities, so many of the fires occurring in these areas are not included in this dataset.
 
-\subsection{Weather Data}
+\subsubsection{Weather}
 
 The meteorological data set comes from a climate simulation of the Murray Darling Basin using the Weather Research and Forecasting (WFR) model. The WRF Modeling system has been developed by the National Center for Atmospheric Research (NCAR), the National Oceanic and Atmospheric Administrations Centers for Environmental Prediction (NCEP) and the other weather research institutions in the United States. \citet{evans10} used the Advanced Research WFR version~3 \citep{skamarock08} to simulate weather for southeastern Australia at a 10km horizontal grid over 24 years from 1985.
 
@@ -213,7 +217,7 @@ Figure~\ref{fig:tw_fire} is constructed in the same manner as Figure~\ref{fig:tw
 Plotting the 2D densities of the drought factor and relative humidity in Figure~\ref{fig:dh_fire}, ranges of relative humidity don't appear to vary on fire days compared to not fire days but in districts 4, 5, 6, 7, 8, 9, 10, 11, 13, 14 and 24 there is a clear difference in the densities of fire compared to no fire. Small drought factors are mostly associated with non-fire days. In districts 2, 12, 15, 16, 17, 18, 20 and 22 do not have large differences in the two densities, these districts generally have high drought factor and low relative humidity.
 
 
-\subsection{Grassland Curing Data}
+\subsubsection{Grassland Curing}
 
 The level of dying or senescence of plant material caused by seasonal weather patterns is referred to as grassland curing. Grassland curing ranges between 0 and 100, where 0 means the grass is green with high moisture content and 100 means the grass is at its driest. Curing has a significant impact on fire behaviour in grasslands, particularly the probability of ignition and subsequent rate of spread \citep{cheney08}.
 
@@ -250,7 +254,7 @@ Figure~\ref{fig:cur_lp} shows a level plot produced using the rasterVis package 
 
 In Figure~\ref{fig:gv_fire} shows the 2D densities for grassland curing and vapour pressure for the fire and non-fire days. Once again we see a clear difference in behaviour across districts.
 
-\subsection{Vapour Pressure  Data}
+\subsubsection{Vapour Pressure}
 
 Vapour pressure, in meteorology, describes the partial pressure of water vapour in the atmosphere, it is directly related to the number of water vapour molecules in the air.  \citet{harris14} find there is a significant relationship between fire activity and vapour pressure among other climate variables. We investigate whether vapour pressure at 9am can improve prediction of fire occurrence.
 
@@ -267,7 +271,7 @@ The vapour pressure dataset was also obtained from the Bureau of Meteorology TER
 Figure~\ref{fig:vap_ras} shows a level plot of the vapour pressure at 9am \citep{rastervis}. The pixel values of the vapour pressure across the state on the 7th of February 2009. We see very clearly in the north-west of the state vapour pressure at 9am is much lower relative to the south-east.
 
 
-\subsection{Precipitation Data}
+\subsubsection{Precipitation}
 
 The rainfall data are gridded analyses of daily rainfall measurements from the Bureau of Meteorology's rain gauge network (TERN, AusCover) derived from daily rainfall values from weather stations across Australia.
 
@@ -297,7 +301,7 @@ Table~\ref{table:correl} shows the cross correlation matrix for the variables us
 
 
 
-\subsection{Assembling Datasets}
+\subsubsection{Assembling Datasets}
 
 Assembling the datasets began with the meteorological data from the WRF model. This data came in NetCDF form \citep{ncdf}. The dataset spanned all of Eastern Australian (Queensland, New South Wales \& Victoria) with daily observations over a 25 year period. This area, divided into 10km grids, contained 28675 grid points each of which had longitude, latitude and weather variable values (temperature, wind speed, relative humidity, FFDI and drought factor) associated with it. Once the time component is taken into account, the original dataset contained over 200 million data points (28675 $\times$ 365 $\times$ 25 ).
 
@@ -320,7 +324,9 @@ The three additional variables (grassland curing, vapour pressure and precipitat
 
 This final dataset is divided into a testing (30\%) and training set (70\%) randomly sampling across `Fire' and `No Fire' such that both datasets have the same proportion of `Fire' (approximately 0.05).
 
-\subsection{Logistic Regression Model}
+\subsection{Models}
+
+\subsubsection{Logistic Regression}
 
 Use of logistic models is the usual method for dealing with a binary response problem and it is common in studies on fire occurrence or ignition.  In this project we use logistic regression models and in addition to the linear constructions used in \citet{andrews03} and \citet{del11} we take into account the non-linear relationship believed to exist between the explanatory variables and dependent variable through the inclusion of regression splines.
 
@@ -335,7 +341,7 @@ where $Y$ denotes fire occurrence, $x_k$ denotes the $k$th predictor and each $f
 
 Regression splines can be subject to over fitting: where the fitted model adheres to the data too strongly and doesn't smooth out `noise' enough. This results in great in-sample predictions but poor out-of-sample predictions. To prevent over fitting occurring we use an automated method that optimizes the number of knots by penalizing for non-smoothness; an overview of using penalized regression splines in this context is given by \citet{wood02}.
 
-\subsection{Classification Trees}
+\subsubsection{Classification Trees}
 
 Classification tree analysis involves segmenting the predictor space into different regions in order to find the best predictor for the response variable.
 
@@ -365,7 +371,7 @@ In interpreting classification trees, proximity to the base of the tree indicate
 
 
 
-\subsection{Random Forests}
+\subsubsection{Random Forests}
 
 A random forest is a technique that uses classification trees as a key building block and helps address the limitations of classification trees and improve predictive performance. They involve multiple trees and random samples of our predictors \citep{berk08}.
 The general algorithm is as follows for our dataset of N observations and P predictor variables \citep{berk08, varian14}:
@@ -390,7 +396,7 @@ Some of the weaknesses of Random Forests is that they can be a black box?in that
 We expect the random forest model to give improved out-of-sample fit particularly with highly non-linear data and despite being difficult to interpret, the random forests can offer insight regarding which predictors contribute the biggest improvements to prediction accuracy \citep{varian14}.
 
 
-\subsection{Classification with Unbalanced Classes}
+\subsubsection{Classification with Unbalanced Classes}
 
 Classical machine learning algorithms assume that the response variable has an equal number of observations within each class. Classes are considered imbalanced if the proportion of observations in one class is not equal to the proportion of observations in the other \citep{japkowicz00}. In practice it is very common to have some degree of imbalance and this does not have much effect on the outcome unless the imbalance reaches some threshold.
 
@@ -513,7 +519,7 @@ With the addition of our other meteorological variables in the logistic Model 3,
   \end{center}
 \end{table}
 
-We add splines to Model 3 in stages using the confusion matrices for 10-fold cross validation to assess accuracy \citep[][using the caret package by]{caret}. The best performing model based on balanced accuracy and number of false negatives (incorrectly predicted `No Fires') is reported in Table~\ref{table:logf}.
+We add splines to Model 3 in stages using the confusion matrices for 10-fold cross validation to assess accuracy \citep[][using the caret package by]{caret}. The best performing model based on balanced accuracy and number of false negatives (incorrectly predicted `No Fires') is reported in Appendix (Table~\ref{table:logf}).
 
 Interestingly, in Model 3 grassland curing is not statistically significant while all the other variables in the model are significant at 0.1\% level. Once the splines are added to the model, the FFDI function, wind speed, and vapour pressure are no longer significant but grassland curing is statistically significant.
 
@@ -531,61 +537,25 @@ Relative humidity appears to have a quadratic relationship with the log-odds rat
 
 Grassland curing exhibits a right skewed function, having a positive effect on the log-odds ratio between 40 and 95. This behaviour is not as intuitive as relative humidity. Fire science would suggest drier fuel would increase probability of ignition.
 
-%Output from best performing splines model (used xtable rather than texreg, too inconsistent?)
-\begin{table}
-  \centering
-  \begin{tabular}{rrrrr}
-    \toprule
-                   & Estimate & Std. Error & z value  & Pr($>|z|$) \\
-    \midrule
-    (Intercept)    & -3.1484  & 0.2757     & -11.4210 & 0.0000 \\
-    ns(ffdi, 5)1   & -0.2905  & 0.3613     & -0.8043  & 0.4213 \\
-    ns(ffdi, 5)2   & -0.2304  & 0.4625     & -0.4982  & 0.6183 \\
-    ns(ffdi, 5)3   & 0.4040   & 0.5589     & 0.7229   & 0.4697 \\
-    ns(ffdi, 5)4   & -0.4340  & 0.9674     & -0.4487  & 0.6537 \\
-    ns(ffdi, 5)5   & -0.8815  & 0.7271     & -1.2124  & 0.2254 \\
-    ns(temp, 1)    & 1.8543   & 0.3416     & 5.4276   & 0.0000 \\
-    ns(rh, 2)1     & 0.9325   & 0.5687     & 1.6397   & 0.1011 \\
-    ns(rh, 2)2     & -0.6173  & 0.3607     & -1.7115  & 0.0870 \\
-    ws             & -0.0169  & 0.0146     & -1.1541  & 0.2485 \\
-    ns(df, 5)1     & 1.1093   & 0.2798     & 3.9639   & 0.0001 \\
-    ns(df, 5)2     & 1.0156   & 0.3115     & 3.2601   & 0.0011 \\
-    ns(df, 5)3     & 0.7113   & 0.2604     & 2.7319   & 0.0063 \\
-    ns(df, 5)4     & 0.8071   & 0.5479     & 1.4730   & 0.1408 \\
-    ns(df, 5)5     & -0.1512  & 0.1950     & -0.7752  & 0.4382 \\
-    ns(curing, 6)1 & 1.5648   & 0.1388     & 11.2754  & 0.0000 \\
-    ns(curing, 6)2 & 2.3986   & 0.1874     & 12.7997  & 0.0000 \\
-    ns(curing, 6)3 & 1.6637   & 0.1640     & 10.1436  & 0.0000 \\
-    ns(curing, 6)4 & 1.6949   & 0.1335     & 12.6921  & 0.0000 \\
-    ns(curing, 6)5 & 1.4634   & 0.3436     & 4.2588   & 0.0000 \\
-    ns(curing, 6)6 & -0.4909  & 0.0817     & -6.0066  & 0.0000 \\
-    rain           & -0.0286  & 0.0056     & -5.0703  & 0.0000 \\
-    vap            & -0.0003  & 0.0067     & -0.0504  & 0.9598 \\
-    \bottomrule
-  \end{tabular}
-  \caption{Regression output for Model 4}
-  \label{table:logf}
-\end{table}
-
 %GAM plots, not sure if this is exactly splines...
-\begin{figure}
-  \null\vfill\noindent
+%\begin{figure}
+%  \null\vfill\noindent
   %\includegraphics[page=1,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
-  \hfill
+%  \hfill
   %\includegraphics[page=2,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
-  \vfill
+%  \vfill
   %\includegraphics[page=3,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
-  \hfill
+%  \hfill
   %\includegraphics[page=4,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
-  \vfill
+%  \vfill
   %\includegraphics[page=5,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
-  \hfill
+%  \hfill
   %\includegraphics[page=6,width=.48\linewidth,height=.45\textheight,keepaspectratio]{figures/gam_pl.pdf}
-  \vfill
-  \null
-  \caption{Plots of smoothing functions in Model 4 with 95\% point-wise confident interval}
-  \label{fig:gam_pl}
-\end{figure}
+%  \vfill
+%  \null
+%  \caption{Plots of smoothing functions in Model 4 with 95\% point-wise confident interval}
+%  \label{fig:gam_pl}
+%\end{figure}
 
 The focus of this project is to build an accurate predictor of fire ignition, so out of sample prediction is a more important evaluation tool than hypothesis testing. Table~\ref{table:cm2} contains confusion matrices (values are proportions of total number of observations in the test set) based on test data predictions, using a cutoff value of 0.5. The confusion matrix is accompanied by measures of accuracy in Table~\ref{table:acc2}.
 
@@ -850,10 +820,53 @@ The greatest improvement in accuracy occurs in models which allow for the input 
 
 While the FFDI may be a good measure of fire intensity once ignition occurs, it is a poor predictor of fire ignition. Predictor performance is improved with the inclusion of the FFDI input variables, grassland curing, vapour pressure at 9am and precipitation. Specifically of these variables, grassland curing is the most important variable in determining probability of ignition.
 
+\section*{Acknowledgements}
+
+The R software~\citep{CRAN} was used to analyse the data, including the packages ggplot2~\citep{ggplot2}, ...
+
 % Appendices start here
 \bibliographystyle{agsm}
 
 \bibliography{references}
+
+\section*{Appendix}
+
+%Output from best performing splines model (used xtable rather than texreg, too inconsistent?)
+\begin{table}
+  \centering
+  \begin{tabular}{rrrrr}
+    \toprule
+                   & Estimate & Std. Error & z value  & Pr($>|z|$) \\
+    \midrule
+    (Intercept)    & -3.1484  & 0.2757     & -11.4210 & 0.0000 \\
+    ns(ffdi, 5)1   & -0.2905  & 0.3613     & -0.8043  & 0.4213 \\
+    ns(ffdi, 5)2   & -0.2304  & 0.4625     & -0.4982  & 0.6183 \\
+    ns(ffdi, 5)3   & 0.4040   & 0.5589     & 0.7229   & 0.4697 \\
+    ns(ffdi, 5)4   & -0.4340  & 0.9674     & -0.4487  & 0.6537 \\
+    ns(ffdi, 5)5   & -0.8815  & 0.7271     & -1.2124  & 0.2254 \\
+    ns(temp, 1)    & 1.8543   & 0.3416     & 5.4276   & 0.0000 \\
+    ns(rh, 2)1     & 0.9325   & 0.5687     & 1.6397   & 0.1011 \\
+    ns(rh, 2)2     & -0.6173  & 0.3607     & -1.7115  & 0.0870 \\
+    ws             & -0.0169  & 0.0146     & -1.1541  & 0.2485 \\
+    ns(df, 5)1     & 1.1093   & 0.2798     & 3.9639   & 0.0001 \\
+    ns(df, 5)2     & 1.0156   & 0.3115     & 3.2601   & 0.0011 \\
+    ns(df, 5)3     & 0.7113   & 0.2604     & 2.7319   & 0.0063 \\
+    ns(df, 5)4     & 0.8071   & 0.5479     & 1.4730   & 0.1408 \\
+    ns(df, 5)5     & -0.1512  & 0.1950     & -0.7752  & 0.4382 \\
+    ns(curing, 6)1 & 1.5648   & 0.1388     & 11.2754  & 0.0000 \\
+    ns(curing, 6)2 & 2.3986   & 0.1874     & 12.7997  & 0.0000 \\
+    ns(curing, 6)3 & 1.6637   & 0.1640     & 10.1436  & 0.0000 \\
+    ns(curing, 6)4 & 1.6949   & 0.1335     & 12.6921  & 0.0000 \\
+    ns(curing, 6)5 & 1.4634   & 0.3436     & 4.2588   & 0.0000 \\
+    ns(curing, 6)6 & -0.4909  & 0.0817     & -6.0066  & 0.0000 \\
+    rain           & -0.0286  & 0.0056     & -5.0703  & 0.0000 \\
+    vap            & -0.0003  & 0.0067     & -0.0504  & 0.9598 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Regression output for Model 4}
+  \label{table:logf}
+\end{table}
+
 
 
 \end{document}
