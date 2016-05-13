@@ -132,7 +132,7 @@ The CFA divides the state into different districts for management purposes. We u
 \begin{figure}
   \centering
   \includegraphics[width=.95\textwidth]{figures/firemap.pdf}
-  \caption{Map of fire ignition 2000 - 2009, and districts.}
+  \caption{Map of fire ignition 2000 - 2009, and districts. Locations of fires are similar from year to year, so they have been combined into one map. The higest density is around the city, and straight lines would suggest along roads. We cannot say that the locations are due to fires being started in, or if they are recorded at, convenient locations.}
   \label{fig:firemap}
 \end{figure}
 
@@ -140,7 +140,7 @@ The CFA divides the state into different districts for management purposes. We u
 \begin{figure}
   \centering
   \includegraphics[width=.8\textwidth]{figures/occurence.pdf}
-  \caption{Number of ignitions by fortnight}
+  \caption{Number of ignitions in each fortnight over 2000-2010. The earlier years saw more fires, particularly 2001. Only fires during fire season were analysed.}
   \label{fig:occ}
 \end{figure}
 
@@ -231,17 +231,6 @@ Page 10 shows how the level of grassland curing (maximum, minimum and average) c
   \label{fig:cur_evol}
 \end{figure}
 
-% level plot of GS curing, probably needs resizing
-\begin{figure}
-  \centering
-	\includegraphics[width=.8\textwidth]{figures/cur_lp.pdf}
-  \caption{Level Plot of Grassland Curing }
-  \label{fig:cur_lp}
-\end{figure}
-
-
-Figure~\ref{fig:cur_lp} shows a level plot produced using the rasterVis package \citep{rastervis}. We observe grassland curing values across the state for the week beginning 25th January 2009. The horizontal margin shows the mean curing value for each longitude and the vertical margin shows the mean curing for each latitude. The plot clearly shows the difference in curing values across the state, in particular the difference between the east and west of the state. This is consistent with time series graphs of curing.
-
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{figures/gv_fire.pdf}
@@ -257,44 +246,12 @@ Vapour pressure, in meteorology, describes the partial pressure of water vapour 
 
 The vapour pressure dataset was also obtained from the Bureau of Meteorology TERN server and AusCover. The vapour pressure dataset is gridded analyses of daily air water vapour pressure from the Bureau of Meteorology's thermometer network across Australia \citep{jones09}, calculated on a 5km grid.
 
-% level plot of vapour pressure, level plot may be unnesc could just have std plot
-\begin{figure}
-  \centering
-	\includegraphics[width=.8\textwidth]{figures/vap_ras.pdf}
-  \caption{Raster plot of vapour pressure 9am }
-  \label{fig:vap_ras}
-\end{figure}
-
-Figure~\ref{fig:vap_ras} shows a level plot of the vapour pressure at 9am \citep{rastervis}. The pixel values of the vapour pressure across the state on the 7th of February 2009. We see very clearly in the north-west of the state vapour pressure at 9am is much lower relative to the south-east.
-
 
 \subsubsection{Precipitation}
 
 The rainfall data are gridded analyses of daily rainfall measurements from the Bureau of Meteorology's rain gauge network (TERN, AusCover) derived from daily rainfall values from weather stations across Australia.
 
 The daily rainfall data represents the amount of precipitation of any type observed by means of rain gauges measuring millimeters of liquid water depth over a 24-hour period. The 24-hour period runs from local time 9am the day before to 9am the current day. Rainfall values from sites across the country are analysed onto a 0.05° × 0.05° grid.
-
-\begin{table}
-  \centering
-  \begin{tabular}{lrrrrrrrr}
-    \toprule
-           & ffdi  & temp  & df    & rh    & ws    & curing & rain  & vap \\
-    \midrule
-    ffdi   & 1.00  & 0.77  & 0.62  & -0.77 & 0.04  & 0.51   & -0.20 & 0.01 \\
-    temp   & 0.77  & 1.00  & 0.43  & -0.70 & -0.18 & 0.46   & -0.10 & 0.39 \\
-    df     & 0.62  & 0.43  & 1.00  & -0.58 & -0.09 & 0.47   & -0.37 & -0.08 \\
-    rh     & -0.77 & -0.70 & -0.58 & 1.00  & 0.19  & -0.49  & 0.31  & 0.06 \\
-    ws     & 0.04  & -0.18 & -0.09 & 0.19  & 1.00  & 0.01   & 0.07  & -0.16 \\
-    curing & 0.51  & 0.46  & 0.47  & -0.49 & 0.01  & 1.00   & -0.11 & 0.05 \\
-    rain   & -0.20 & -0.10 & -0.37 & 0.31  & 0.07  & -0.11  & 1.00  & 0.17 \\
-    vap    & 0.01  & 0.39  & -0.08 & 0.06  & -0.16 & 0.05   & 0.17  & 1.00 \\
-    \bottomrule
-  \end{tabular}
-  \caption{Correlation matrix of variables}
-  \label{table:correl}
-\end{table}
-
-Table~\ref{table:correl} shows the cross correlation matrix for the variables used to predict probability of ignition. High correlation can pose a problem in regression models and to a lesser extent machine learning methods. Variables of concern are temperature, drought factor, relative humidity and FFDI and  which have relatively strong correlation coefficients.
 
 
 
@@ -619,18 +576,8 @@ Figure~\ref{fig:ffdi} is the ROC curve for the four logistic models. The ROC cur
 
 \subsection{Classification Trees}
 
-As classification trees can be sensitive to the sample used, we constructed several trees on different balanced samples of the data. As each of the trees were structured very similarly we only report two in Figure~\ref{fig:tree2}.
-
-% Trees with all variables
-\begin{figure}
-  \centering
-	\includegraphics[page=1, width=\textwidth]{figures/trees2.pdf}\par\vspace*{1.5cm}\par
-	\includegraphics[page=2, width=\textwidth]{figures/trees2.pdf}
-  \caption{Trees with all variables}
-  \label{fig:tree2}
-\end{figure}
-
-For both the reported trees, curing is the first and second split on the tree. When the same variable is used for consecutive splits in a classification tree there are bands of values which the variable takes which are determining the outcome.
+As classification trees can be sensitive to the sample used, we constructed several trees on different balanced samples of the data. 
+For the trees, curing is the first and second split on the tree. When the same variable is used for consecutive splits in a classification tree there are bands of values which the variable takes which are determining the outcome.
 
 Interpreting the first tree in Figure~\ref{fig:tree2}, when the grassland curing level is outside the 39 to 97 range the tree predicts there will be no fire. Approximately 33\% of the training data lies in these branches.
 
@@ -740,23 +687,15 @@ Table~\ref{table:cmrf} contains the confusion matrix for the forest predictions 
   \label{table:accrf}
 \end{table}
 
-The variable importance is calculated as mean decrease in accuracy using the out-of-bag observations, described in detail by \citet{archer08}. Figure~\ref{fig:vimp} shows the variable importance for the forest.
+The variable importance is calculated as mean decrease in accuracy using the out-of-bag observations, described in detail by \citet{archer08}. 
 
 Grassland curing is the most important variable in determining fire ignition which is consistent with the output from the individual trees where curing was the first and second split for the majority of the trees.
 
 FFDI, temperature, vapour pressure, relative humidity and windspeed all have close values of importance. The FFDI is second most important in determining probability of fire ignition which seems counterintuitive given it's poor performance in the classification trees and logistic regression.
 
 Similar variable importance may indicate that on the average across all trees the variables are equally important in determining probability of ignition, however variable importance cannot necessarily be taken simply at face value. \citet{strob07}  and \citet{strob08} show that variable importance measures may be biased by the measurement scale of the variables and show a preference for correlated variables. Alternative calculation of variable importance is outside the scope of this paper but the limitations of the Gini method should be taken into account.
-
-Table~\ref{table:correl} is the cross-correlation matrix for the variables and we observe that many of the variables have relatively high correlation coefficients (with the exception of vapour pressure and windspeed) which may be causing biased variable importance.
-
-
-\begin{figure}
-  \centering
-  	\includegraphics[width=.7\textwidth]{figures/varimp.pdf}
-  \caption{Variable Importance for random forest}
-  \label{fig:vimp}
-\end{figure}
+%Table~\ref{table:correl} is the cross-correlation matrix for the variables and 
+We observed that many of the variables have relatively high correlation coefficients (with the exception of vapour pressure and windspeed) which may be causing biased variable importance.
 
 Finally Figure~\ref{fig:rocrf} shows the ROC curve for the random forest, a single classification tree, the linear logistic model and the splines model. Table~\ref{table:AUC} contains the area under the curves (AUC) for the ROC curves shown in Figure~\ref{fig:rocrf} . We see the forest and splines model outperform a single tree and linear-logistic model. The closeness of the two models is interesting given random forests are generally expected to be a the best predictors at the expense of interpretability.
 
@@ -828,6 +767,50 @@ The R software~\citep{CRAN} was used to analyse the data, including the packages
 
 \section*{Appendix}
 
+\begin{table}
+  \centering
+  \begin{tabular}{lrrrrrrrr}
+    \toprule
+           & ffdi  & temp  & df    & rh    & ws    & curing & rain  & vap \\
+    \midrule
+    ffdi   & 1.00  & 0.77  & 0.62  & -0.77 & 0.04  & 0.51   & -0.20 & 0.01 \\
+    temp   & 0.77  & 1.00  & 0.43  & -0.70 & -0.18 & 0.46   & -0.10 & 0.39 \\
+    df     & 0.62  & 0.43  & 1.00  & -0.58 & -0.09 & 0.47   & -0.37 & -0.08 \\
+    rh     & -0.77 & -0.70 & -0.58 & 1.00  & 0.19  & -0.49  & 0.31  & 0.06 \\
+    ws     & 0.04  & -0.18 & -0.09 & 0.19  & 1.00  & 0.01   & 0.07  & -0.16 \\
+    curing & 0.51  & 0.46  & 0.47  & -0.49 & 0.01  & 1.00   & -0.11 & 0.05 \\
+    rain   & -0.20 & -0.10 & -0.37 & 0.31  & 0.07  & -0.11  & 1.00  & 0.17 \\
+    vap    & 0.01  & 0.39  & -0.08 & 0.06  & -0.16 & 0.05   & 0.17  & 1.00 \\
+    \bottomrule
+  \end{tabular}
+  \caption{Correlation matrix of variables}
+  \label{table:correl}
+\end{table}
+
+Table~\ref{table:correl} shows the cross correlation matrix for the variables used to predict probability of ignition. High correlation can pose a problem in regression models and to a lesser extent machine learning methods. Variables of concern are temperature, drought factor, relative humidity and FFDI and  which have relatively strong correlation coefficients.
+
+
+% level plot of GS curing, probably needs resizing
+\begin{figure}
+  \centering
+	\includegraphics[width=.8\textwidth]{figures/cur_lp.pdf}
+  \caption{Level Plot of Grassland Curing }
+  \label{fig:cur_lp}
+\end{figure}
+
+
+Figure~\ref{fig:cur_lp} shows a level plot produced using the rasterVis package \citep{rastervis}. We observe grassland curing values across the state for the week beginning 25th January 2009. The horizontal margin shows the mean curing value for each longitude and the vertical margin shows the mean curing for each latitude. The plot clearly shows the difference in curing values across the state, in particular the difference between the east and west of the state. This is consistent with time series graphs of curing.
+
+% level plot of vapour pressure, level plot may be unnesc could just have std plot
+\begin{figure}
+  \centering
+	\includegraphics[width=.8\textwidth]{figures/vap_ras.pdf}
+  \caption{Raster plot of vapour pressure 9am }
+  \label{fig:vap_ras}
+\end{figure}
+
+Figure~\ref{fig:vap_ras} shows a level plot of the vapour pressure at 9am \citep{rastervis}. The pixel values of the vapour pressure across the state on the 7th of February 2009. We see very clearly in the north-west of the state vapour pressure at 9am is much lower relative to the south-east.
+
 %Output from best performing splines model (used xtable rather than texreg, too inconsistent?)
 \begin{table}
   \centering
@@ -864,6 +847,26 @@ The R software~\citep{CRAN} was used to analyse the data, including the packages
   \label{table:logf}
 \end{table}
 
+As each of the trees were structured very similarly we only report two in Figure~\ref{fig:tree2}.
+
+% Trees with all variables
+\begin{figure}
+  \centering
+	\includegraphics[page=1, width=\textwidth]{figures/trees2.pdf}\par\vspace*{1.5cm}\par
+	\includegraphics[page=2, width=\textwidth]{figures/trees2.pdf}
+  \caption{Trees with all variables}
+  \label{fig:tree2}
+\end{figure}
+
+Figure~\ref{fig:vimp} shows the variable importance for the forest.
+
+
+\begin{figure}
+  \centering
+  	\includegraphics[width=.7\textwidth]{figures/varimp.pdf}
+  \caption{Variable Importance for random forest}
+  \label{fig:vimp}
+\end{figure}
 
 
 \end{document}

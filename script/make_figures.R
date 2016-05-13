@@ -74,9 +74,11 @@ theme_map$plot.title <- element_blank()
 theme_map$axis.title <- element_blank()
 theme_map$panel.border <- element_rect(colour = "white", size=1, fill=NA)
 
+fire.dt$year <- year(fire.dt$date)
 ggplot(vic_map, aes(x=long, y=lat)) + geom_path(aes(order=order, group=group)) +
   geom_point(data=fire.dt, aes(x=long, y=lat), alpha=.1, color="red3") +
   geom_text(data=centroids, aes(x=long_c, y=lat_c, label=name)) + 
+  #facet_wrap(~year, ncol=5) +
   coord_equal() + theme_map
 
 #dev.off()
@@ -87,13 +89,14 @@ f$year <- year(f$date)
 f$week <- week(f$date)
 f$month <- month(f$date)
 f$Season <- factor(ifelse(f$month %in% c(4, 5, 6, 7, 8, 9), 
-                          "Outisde Fire Season", "Fire Season"), ordered=TRUE)
+                          "Outside Fire Season", "Fire Season"), ordered=TRUE)
 
 g <- ggplot(f, aes(date, fill=Season)) + geom_histogram(binwidth=14) + 
-  scale_fill_brewer(palette = "Dark2") +
-  ggtitle("Count of fires by fortnight") + 
+  scale_fill_brewer("", palette = "Dark2") +
+  #ggtitle("Count of fires by fortnight") + 
   xlab("Date") + 
-  ylab("Number of fires")
+  ylab("Number of fires") + scale_x_date(date_breaks="year", date_labels="%Y") +
+  theme(legend.position="bottom")
 
 #savepdf("./figures/occurence")
 g
@@ -129,20 +132,27 @@ load("./robject/train.rda")
 d <- newsub
 d <- train
 #plot ws, temp and fdr
+d <- d %>% filter(div != "Barwon")
+library(viridis)
 p <- ggplot(d, aes(ws, temp, color=fdr)) + 
   #geom_point(alpha=0.1) + 
   geom_density2d(alpha=.5) +   
+  xlab("wind speed") + ylab("temperature") +
   theme(aspect.ratio=1) + facet_wrap(~div, ncol=5) + theme_bw() + 
-  scale_color_brewer(palette = "Dark2")
+  scale_color_viridis("fire danger rating",discrete=TRUE) + 
+  theme(legend.position="bottom")
+#scale_color_brewer(palette = "Dark2")
 #savepdf("figures/tw_fdr")
 p
 #dev.off()
 
 # Figure 9
 #plot ws, temp, and fire
+library()
 d$fire <- factor(d$fire)
 f <- ggplot(d, aes(ws, temp, color=fire)) + geom_density2d(alpha=.5) +   
   theme(aspect.ratio=1) + facet_wrap(~div, ncol=5) + theme_bw() + 
+  xlab("wind speed") + ylab("temperature") +
   scale_color_brewer(palette = "Dark2")
 
 #savepdf("./figures/tw_fire")
