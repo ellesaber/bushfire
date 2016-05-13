@@ -24,6 +24,7 @@ savepdf <- function(file, width=16, height=10)
 #datset
 # Fig 7
 load("./robject/firedt.rda")
+
 #mappy stuff
 box <- make_bbox(long, lat, fire.dt, f=0.05)
 myMap <- get_stamenmap(bbox=box, zoom=6, maptype = "toner", crop=TRUE)
@@ -35,6 +36,49 @@ vicmap <- ggmap(myMap,
 firemap <- vicmap + geom_point(aes(x=long, y=lat), data=fire.dt, alpha=.1, color="red3") 
 #savepdf("./figures/firemap")
 firemap 
+
+# layerName is the name of the unzipped shapefile without file type extensions 
+layerName <- "SD11aAust"  
+# Read in the data
+aus.shape <- readOGR(dsn="./data_raw/shps", layer=layerName) 
+#remove other polygons to leave only Victoria
+vic.shp <- aus.shape[aus.shape$STATE_CODE == 2,]
+
+devtools::install_github("ateucher/rmapshaper")
+library(rmapshaper)
+vic.shp.small <- ms_simplify(vic.shp, keep=0.05) # use instead of thinnedSpatialPoly
+vic_map <- ggplot2::fortify(vic.shp.small)
+ggplot(vic_map, aes(x=long, y=lat, order=order, group=group)) + geom_path()
+
+library(dplyr)
+library(purrr)
+polys <- as(vic.shp.small, "SpatialPolygons")
+class(polys) # should be SpatialPolygons
+length(polys) # should be 150
+
+centroid <- function(i, polys) {
+  ctr <- Polygon(polys[i])@labpt
+  data.frame(long_c=ctr[1], lat_c=ctr[2])
+}
+centroids <- seq_along(polys) %>% purrr::map_df(centroid, polys=polys)
+head(centroids)
+centroids$id <- vic.shp.small@data$SD_CODE11
+centroids$name <- vic.shp.small@data$SD_NAME11
+
+# Make it look like a map
+theme_map <- theme_bw()
+theme_map$line <- element_blank()
+theme_map$strip.text <- element_blank()
+theme_map$axis.text <- element_blank()
+theme_map$plot.title <- element_blank()
+theme_map$axis.title <- element_blank()
+theme_map$panel.border <- element_rect(colour = "white", size=1, fill=NA)
+
+ggplot(vic_map, aes(x=long, y=lat)) + geom_path(aes(order=order, group=group)) +
+  geom_point(data=fire.dt, aes(x=long, y=lat), alpha=.1, color="red3") +
+  geom_text(data=centroids, aes(x=long_c, y=lat_c, label=name)) + 
+  coord_equal() + theme_map
+
 #dev.off()
 
 # Fig 8
